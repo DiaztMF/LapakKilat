@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Download, Copy, Check, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 
@@ -68,9 +69,11 @@ export function QrCodeSection({ slug, isPublished }: QrCodeSectionProps) {
           <code className="flex-1 truncate text-sm text-gray-700">
             {storeUrl}
           </code>
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={handleCopy}
-            className="shrink-0 rounded-md p-1.5 text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-600"
+            className="shrink-0 rounded-md p-1.5 text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-600 h-8 w-8"
             title="Salin URL"
           >
             {copied ? (
@@ -78,7 +81,7 @@ export function QrCodeSection({ slug, isPublished }: QrCodeSectionProps) {
             ) : (
               <Copy className="h-4 w-4" />
             )}
-          </button>
+          </Button>
         </div>
 
         {/* Actions */}
@@ -97,7 +100,7 @@ export function QrCodeSection({ slug, isPublished }: QrCodeSectionProps) {
               href={storeUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex w-full items-center justify-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700 transition-colors hover:bg-emerald-100"
+              className={cn(buttonVariants({ variant: "outline" }), "flex w-full items-center justify-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100")}
             >
               <ExternalLink className="h-4 w-4" />
               Lihat Toko

@@ -237,15 +237,16 @@ export function ProfilForm({ shop }: { shop: Shop }) {
         <CardContent>
           <div className="grid gap-3 sm:grid-cols-3">
             {presetOptions.map((preset) => (
-              <button
+              <Button
                 key={preset.id}
                 type="button"
+                variant="ghost"
                 onClick={() => setSelectedPreset(preset.id)}
                 className={cn(
-                  "group relative flex flex-col overflow-hidden rounded-xl border-2 p-4 text-left transition-all duration-150",
+                  "group relative flex flex-col items-start justify-start h-auto w-full overflow-hidden rounded-xl border-2 p-4 text-left transition-all duration-150 whitespace-normal",
                   selectedPreset === preset.id
-                    ? "border-emerald-500 ring-2 ring-emerald-500/20"
-                    : "border-gray-200 hover:border-gray-300"
+                    ? "border-emerald-500 ring-2 ring-emerald-500/20 bg-emerald-50/50 hover:bg-emerald-50/50"
+                    : "border-gray-200 hover:border-gray-300 hover:bg-transparent"
                 )}
               >
                 {selectedPreset === preset.id && (
@@ -279,7 +280,7 @@ export function ProfilForm({ shop }: { shop: Shop }) {
                 <span className="mt-0.5 text-xs text-gray-500">
                   {preset.description}
                 </span>
-              </button>
+              </Button>
             ))}
           </div>
         </CardContent>

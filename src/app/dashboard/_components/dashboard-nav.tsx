@@ -6,6 +6,7 @@ import { signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { LogOut, Store, Package, Zap } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface DashboardNavProps {
   user: {
@@ -91,14 +92,15 @@ export function DashboardNav({ user }: DashboardNavProps) {
               {user.name}
             </span>
           </div>
-          <button
+          <Button
+            variant="ghost"
             onClick={handleSignOut}
             className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-500 transition-all duration-150 ease-in-out hover:bg-red-50 hover:text-red-600 active:scale-95"
             title="Keluar"
           >
             <LogOut className="h-4 w-4" />
             <span className="hidden sm:inline">Keluar</span>
-          </button>
+          </Button>
         </div>
       </div>
     </nav>

@@ -6,6 +6,7 @@ import { useCartStore } from "@/stores/cart-store";
 import { compileWhatsAppCheckout } from "@/lib/whatsapp";
 import type { TemplateTokens, TemplatePreset } from "@/lib/template-presets";
 import { X, Plus, Minus, Trash2, MessageCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface CartDrawerProps {
   shopName: string;
@@ -102,17 +103,19 @@ export function CartDrawer({
           <h2 className={cn("text-lg font-bold", tokens.text)}>
             Keranjang Belanja
           </h2>
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => setIsOpen(false)}
             className={cn(
-              "rounded-full p-2 transition-colors",
+              "rounded-full p-2 transition-colors h-9 w-9",
               preset === "minimalist"
                 ? "hover:bg-zinc-800"
                 : "hover:bg-gray-100"
             )}
           >
             <X className={cn("h-5 w-5", tokens.muted)} />
-          </button>
+          </Button>
         </div>
 
         {/* Items */}
@@ -168,7 +171,9 @@ export function CartDrawer({
 
                   {/* Quantity Controls */}
                   <div className="flex items-center gap-2">
-                    <button
+                    <Button
+                      variant="outline"
+                      size="icon"
                       onClick={() =>
                         updateQuantity(item.productId, item.quantity - 1)
                       }
@@ -181,7 +186,7 @@ export function CartDrawer({
                       )}
                     >
                       <Minus className={cn("h-3 w-3", tokens.muted)} />
-                    </button>
+                    </Button>
                     <span
                       className={cn(
                         "w-6 text-center text-sm font-semibold",
@@ -190,7 +195,9 @@ export function CartDrawer({
                     >
                       {item.quantity}
                     </span>
-                    <button
+                    <Button
+                      variant="outline"
+                      size="icon"
                       onClick={() =>
                         updateQuantity(item.productId, item.quantity + 1)
                       }
@@ -203,13 +210,15 @@ export function CartDrawer({
                       )}
                     >
                       <Plus className={cn("h-3 w-3", tokens.muted)} />
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={() => removeItem(item.productId)}
-                      className="ml-1 rounded-md p-1.5 text-red-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                      className="ml-1 rounded-md p-1.5 text-red-400 transition-colors hover:bg-red-50 hover:text-red-600 h-8 w-8"
                     >
                       <Trash2 className="h-4 w-4" />
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ))}
@@ -249,18 +258,19 @@ export function CartDrawer({
             />
 
             {/* Checkout Button */}
-            <button
+            <Button
+              variant="default"
               onClick={handleCheckout}
               disabled={!buyerName.trim()}
               className={cn(
-                "flex w-full items-center justify-center gap-2 py-3 text-base font-semibold transition-all duration-150 ease-in-out active:scale-95 disabled:opacity-50",
+                "flex w-full items-center justify-center gap-2 py-6 text-base font-semibold transition-all duration-150 ease-in-out active:scale-95 disabled:opacity-50",
                 tokens.radius,
                 "bg-green-500 text-white hover:bg-green-600"
               )}
             >
               <MessageCircle className="h-5 w-5" />
               Pesan via WhatsApp
-            </button>
+            </Button>
           </div>
         )}
       </div>
