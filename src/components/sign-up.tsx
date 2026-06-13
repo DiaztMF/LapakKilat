@@ -33,7 +33,18 @@ export default function SignUpPage() {
                     router.push('/')
                 },
                 onError: (ctx) => {
-                    setError(ctx.error.message || 'Gagal mendaftar. Silakan coba lagi.')
+                    let errMsg = 'Gagal mendaftar. Silakan coba lagi.';
+                    const message = ctx.error.message?.toLowerCase() || '';
+                    if (message.includes('already exists') || message.includes('registered') || message.includes('in use')) {
+                        errMsg = 'Email ini sudah terdaftar. Silakan masuk atau gunakan email lain.';
+                    } else if (message.includes('too short') || message.includes('password')) {
+                        errMsg = 'Kata sandi terlalu pendek (minimal 8 karakter).';
+                    } else if (message.includes('invalid email') || message.includes('email format')) {
+                        errMsg = 'Format email tidak valid.';
+                    } else if (ctx.error.message) {
+                        errMsg = ctx.error.message;
+                    }
+                    setError(errMsg)
                     setIsLoading(false)
                 }
             }
@@ -139,6 +150,7 @@ export default function SignUpPage() {
                         )}
 
                         <Button 
+                            type="submit"
                             disabled={isLoading}
                             className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-colors duration-150 active:scale-95 disabled:opacity-70">
                             {isLoading ? 'Memproses...' : 'Daftar'}

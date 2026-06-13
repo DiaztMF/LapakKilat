@@ -1,4 +1,5 @@
 import { betterAuth } from "better-auth";
+import { dash } from "@better-auth/infra";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "./db";
 import { nanoid } from "nanoid";
@@ -27,6 +28,18 @@ export const auth = betterAuth({
       maxAge: 5 * 60, // 5 menit
     },
   },
+  emailAndPassword: {
+    enabled: true,
+  },
+  rateLimit: {
+    window: 60, // 60 detik (1 menit)
+    max: 10,    // maksimal 10 request untuk melindungi dari brute-force
+  },
+  trustedOrigins: [
+    "http://localhost:3000",
+    "https://*.ngrok-free.app",
+    "https://*.ngrok.io",
+  ],
   databaseHooks: {
     user: {
       create: {
@@ -47,6 +60,7 @@ export const auth = betterAuth({
       },
     },
   },
+  plugins: [dash()],
 });
 
 export type Session = typeof auth.$Infer.Session;

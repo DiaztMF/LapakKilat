@@ -8,7 +8,7 @@ export default function FAQsTwo() {
         {
             id: 'item-1',
             question: 'Apakah membuat toko online di LapakKilat benar-benar gratis?',
-            answer: 'Ya, 100% gratis selamanya untuk fitur dasar. Anda bisa membuat katalog online, memasukkan produk sebanyak yang Anda inginkan, mengunduh QR Code toko, dan langsung menerima checkout pesanan via WhatsApp tanpa biaya sepeser pun.',
+            answer: 'Ya, 100% gratis selamanya. Anda bisa membuat katalog online, memasukkan hingga 20 produk aktif, mengunduh QR Code toko, dan langsung menerima checkout pesanan via WhatsApp tanpa biaya sepeser pun.',
         },
         {
             id: 'item-2',
@@ -23,7 +23,7 @@ export default function FAQsTwo() {
         {
             id: 'item-4',
             question: 'Berapa banyak produk yang bisa saya unggah ke katalog?',
-            answer: 'Bahkan di paket gratis sekalipun, Anda dibebaskan untuk menambahkan produk tanpa batasan jumlah (unlimited). Kami ingin memastikan setiap UMKM bisa memajang seluruh dagangannya tanpa khawatir batasan slot produk.',
+            answer: 'Anda dapat mengunggah hingga 20 produk aktif ke dalam katalog online Anda. Batasan ini kami terapkan untuk memastikan performa loading katalog Anda tetap kilat, responsif, dan optimal bagi calon pelanggan Anda.',
         },
         {
             id: 'item-5',
