@@ -4,24 +4,26 @@ import type { NextRequest } from "next/server";
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip proxy untuk public routes
-  if (
-    pathname === "/" ||
-    pathname.startsWith("/api/auth") ||
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/favicon")
-  ) {
-    return NextResponse.next();
-  }
+  // Daftar rute yang harus dilindungi middleware global
+  const isProtectedPath =
+    pathname.startsWith("/dashboard") || pathname.startsWith("/api/upload");
 
-  // Guard dashboard routes - cek session cookie
-  if (pathname.startsWith("/dashboard")) {
+  if (isProtectedPath) {
     const sessionCookie =
       request.cookies.get("better-auth.session_token") ||
       request.cookies.get("__Secure-better-auth.session_token");
 
     if (!sessionCookie?.value) {
-      return NextResponse.redirect(new URL("/", request.url));
+      // Jika request API, kembalikan 401
+      if (pathname.startsWith("/api/")) {
+        return NextResponse.json(
+          { error: "Unauthorized" },
+          { status: 401 }
+        );
+      }
+      
+      // Jika request halaman, redirect ke /login
+      return NextResponse.redirect(new URL("/login", request.url));
     }
   }
 
@@ -29,5 +31,14 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api/auth (Better Auth endpoints)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico, sitemap.xml, robots.txt (metadata files)
+     */
+    "/((?!api/auth|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+  ],
 };

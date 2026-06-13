@@ -38,11 +38,11 @@ export default function Pricing({ onGetStarted }: PricingProps) {
                             <ul className="list-outside space-y-3 text-sm text-gray-600">
                                 {[
                                     '1 Katalog Online Aktif',
-                                    'Daftar Produk Tanpa Batas',
+                                    'Maksimal 20 Produk Aktif',
+                                    'Batas Upload Gambar 2MB',
                                     'Checkout WhatsApp Langsung',
                                     'QR Code Toko Otomatis',
-                                    'Desain Mobile-First Standar',
-                                    'Dukungan Komunitas'
+                                    '3 Pilihan Desain Preset'
                                 ].map((item, index) => (
                                     <li key={index} className="flex items-center gap-2">
                                         <Check className="size-4 text-emerald-600 shrink-0" />
@@ -52,16 +52,19 @@ export default function Pricing({ onGetStarted }: PricingProps) {
                             </ul>
                         </CardContent>
                     </Card>
-
+ 
                     {/* Pro Plan */}
                     <Card className="relative flex flex-col justify-between border border-emerald-500 shadow-md rounded-2xl p-6 bg-white ring-1 ring-emerald-500">
                         <span className="absolute inset-x-0 -top-3.5 mx-auto flex h-7 w-fit items-center rounded-full bg-emerald-600 px-4 py-1 text-xs font-semibold text-white uppercase tracking-wider">
                             Paling Populer
                         </span>
-
+ 
                         <CardHeader className="p-0 mb-6">
-                            <CardTitle className="font-semibold text-xl text-gray-900">Paket Pro</CardTitle>
-                            <span className="my-3 block text-3xl font-bold text-gray-900">Rp 49.000 <span className="text-sm font-normal text-gray-500">/ bulan</span></span>
+                            <CardTitle className="font-semibold text-xl text-gray-900 flex items-center justify-between">
+                                <span>Paket Pro</span>
+                                <span className="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-normal normal-case leading-none">Segera Hadir</span>
+                            </CardTitle>
+                            <span className="my-3 block text-3xl font-bold text-gray-900">Rp 50.000 <span className="text-sm font-normal text-gray-500">/ bulan</span></span>
                             <CardDescription className="text-sm text-gray-500">Untuk bisnis berkembang yang ingin terlihat profesional.</CardDescription>
                             <Button 
                                 variant="default"
@@ -71,7 +74,7 @@ export default function Pricing({ onGetStarted }: PricingProps) {
                                 Daftar Sekarang
                             </Button>
                         </CardHeader>
-
+ 
                         <CardContent className="p-0 flex-1">
                             <hr className="border-dashed border-gray-100 my-6" />
                             <ul className="list-outside space-y-3 text-sm text-gray-600">
@@ -91,11 +94,14 @@ export default function Pricing({ onGetStarted }: PricingProps) {
                             </ul>
                         </CardContent>
                     </Card>
-
+ 
                     {/* Enterprise Plan */}
                     <Card className="flex flex-col justify-between border border-gray-100 shadow-sm rounded-2xl p-6 bg-white">
                         <CardHeader className="p-0 mb-6">
-                            <CardTitle className="font-semibold text-xl text-gray-900">Kustom / Agen</CardTitle>
+                            <CardTitle className="font-semibold text-xl text-gray-900 flex items-center justify-between">
+                                <span>Kustom / Agen</span>
+                                <span className="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-normal normal-case leading-none">Segera Hadir</span>
+                            </CardTitle>
                             <span className="my-3 block text-3xl font-bold text-gray-900">Hubungi Kami</span>
                             <CardDescription className="text-sm text-gray-500">Untuk kemitraan UMKM binaan atau multi-cabang.</CardDescription>
                             <Button 

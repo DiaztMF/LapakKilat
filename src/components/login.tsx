@@ -32,7 +32,16 @@ export default function LoginPage() {
                     router.push('/')
                 },
                 onError: (ctx) => {
-                    setError(ctx.error.message || 'Gagal masuk. Periksa kembali email dan kata sandi Anda.')
+                    let errMsg = 'Gagal masuk. Periksa kembali email dan kata sandi Anda.';
+                    const message = ctx.error.message?.toLowerCase() || '';
+                    if (message.includes('invalid email or password') || message.includes('invalid credentials') || message.includes('wrong password')) {
+                        errMsg = 'Email atau kata sandi salah. Silakan coba lagi.';
+                    } else if (message.includes('user not found') || message.includes('does not exist')) {
+                        errMsg = 'Akun dengan email ini tidak ditemukan.';
+                    } else if (ctx.error.message) {
+                        errMsg = ctx.error.message;
+                    }
+                    setError(errMsg)
                     setIsLoading(false)
                 }
             }
@@ -123,6 +132,7 @@ export default function LoginPage() {
                         )}
 
                         <Button 
+                            type="submit"
                             disabled={isLoading}
                             className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-colors duration-150 active:scale-95 disabled:opacity-70">
                             {isLoading ? 'Memproses...' : 'Masuk'}
