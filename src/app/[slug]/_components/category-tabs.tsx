@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import type { TemplateTokens, TemplatePreset } from "@/lib/template-presets";
+import { Button } from "@/components/ui/button";
 
 interface CategoryTabsProps {
   categories: string[];
@@ -54,7 +55,8 @@ export function CategoryTabs({ categories, tokens, preset }: CategoryTabsProps) 
         )}
       >
         {categories.map((category) => (
-          <button
+          <Button
+            variant="ghost"
             key={category}
             onClick={() => handleTabChange(category)}
             className={cn(
@@ -64,7 +66,7 @@ export function CategoryTabs({ categories, tokens, preset }: CategoryTabsProps) 
             )}
           >
             {category}
-          </button>
+          </Button>
         ))}
       </div>
     </div>

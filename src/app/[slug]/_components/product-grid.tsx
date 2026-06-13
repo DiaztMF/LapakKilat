@@ -6,6 +6,7 @@ import { cn, formatRupiah } from "@/lib/utils";
 import { useCartStore } from "@/stores/cart-store";
 import type { TemplateTokens, TemplatePreset } from "@/lib/template-presets";
 import { ShoppingCart } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface Product {
   id: string;
@@ -145,7 +146,8 @@ export function ProductGrid({ products, tokens, preset }: ProductGridProps) {
             </p>
 
             {/* Add to Cart Button */}
-            <button
+            <Button
+              variant="ghost"
               onClick={() => handleAddToCart(product)}
               className={cn(
                 "mt-2 w-full py-2.5 text-sm font-semibold transition-all duration-150 ease-in-out active:scale-95",
@@ -156,7 +158,7 @@ export function ProductGrid({ products, tokens, preset }: ProductGridProps) {
               )}
             >
               + Keranjang
-            </button>
+            </Button>
           </div>
         </div>
       ))}

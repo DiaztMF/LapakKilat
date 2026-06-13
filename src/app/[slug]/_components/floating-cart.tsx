@@ -4,6 +4,7 @@ import { cn, formatRupiah } from "@/lib/utils";
 import { useCartStore } from "@/stores/cart-store";
 import type { TemplateTokens, TemplatePreset } from "@/lib/template-presets";
 import { ShoppingCart } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface FloatingCartProps {
   tokens: TemplateTokens;
@@ -22,10 +23,11 @@ export function FloatingCart({ tokens, preset }: FloatingCartProps) {
   };
 
   return (
-    <button
+    <Button
+      variant="ghost"
       onClick={handleClick}
       className={cn(
-        "fixed bottom-6 left-1/2 z-50 flex w-11/12 max-w-sm -translate-x-1/2 items-center justify-between px-5 py-4 text-sm font-semibold shadow-lg transition-all duration-150 ease-in-out active:scale-95",
+        "fixed bottom-6 left-1/2 z-50 flex w-11/12 max-w-sm -translate-x-1/2 items-center justify-between px-5 py-6 text-sm font-semibold shadow-lg transition-all duration-150 ease-in-out active:scale-95",
         tokens.radius === "rounded-none" ? "rounded-none" : "rounded-2xl",
         tokens.accent,
         tokens.accentText,
@@ -37,6 +39,6 @@ export function FloatingCart({ tokens, preset }: FloatingCartProps) {
         <span>{getTotalItems()} Item</span>
       </span>
       <span className="font-bold">{formatRupiah(getTotalPrice())}</span>
-    </button>
+    </Button>
   );
 }
