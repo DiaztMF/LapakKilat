@@ -38,9 +38,6 @@ export default function LandingPage() {
       {/* Hero Section */}
       <HeroSection onGetStarted={handleGetStarted} />
 
-      {/* Logo Cloud Section */}
-      <LogoCloud />
-
       {/* How It Works Section */}
       <HowItWorks />
 
