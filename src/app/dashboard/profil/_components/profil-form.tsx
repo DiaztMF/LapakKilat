@@ -22,6 +22,7 @@ interface Shop {
   profileImage: string | null;
   bannerImage: string | null;
   templatePreset: "fresh" | "playful" | "minimalist";
+  primaryColor: string;
   isPublished: boolean;
 }
 
@@ -35,6 +36,15 @@ export function ProfilForm({ shop }: { shop: Shop }) {
   const [selectedPreset, setSelectedPreset] = useState<TemplatePreset>(
     shop.templatePreset
   );
+  const [primaryColor, setPrimaryColor] = useState(shop.primaryColor || "#059669");
+
+  const handlePresetSelect = (preset: TemplatePreset) => {
+    setSelectedPreset(preset);
+    // Auto-update primary color based on preset defaults
+    if (preset === "fresh") setPrimaryColor("#059669");
+    else if (preset === "playful") setPrimaryColor("#fb7185");
+    else if (preset === "minimalist") setPrimaryColor("#18181b");
+  };
 
   const handleImageUpload = async (
     file: File,
@@ -81,6 +91,7 @@ export function ProfilForm({ shop }: { shop: Shop }) {
     formData.set("profileImage", profileImage);
     formData.set("bannerImage", bannerImage);
     formData.set("templatePreset", selectedPreset);
+    formData.set("primaryColor", primaryColor);
 
     try {
       const result = await updateShopProfile(formData);
@@ -232,56 +243,125 @@ export function ProfilForm({ shop }: { shop: Shop }) {
       {/* Pilihan Desain */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Pilihan Desain</CardTitle>
+          <CardTitle className="text-lg">Pilihan Desain & Warna</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid gap-3 sm:grid-cols-3">
-            {presetOptions.map((preset) => (
-              <Button
-                key={preset.id}
-                type="button"
-                variant="ghost"
-                onClick={() => setSelectedPreset(preset.id)}
-                className={cn(
-                  "group relative flex flex-col items-start justify-start h-auto w-full overflow-hidden rounded-xl border-2 p-4 text-left transition-all duration-150 whitespace-normal",
-                  selectedPreset === preset.id
-                    ? "border-emerald-500 ring-2 ring-emerald-500/20 bg-emerald-50/50 hover:bg-emerald-50/50"
-                    : "border-gray-200 hover:border-gray-300 hover:bg-transparent"
-                )}
-              >
-                {selectedPreset === preset.id && (
-                  <div className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500">
-                    <Check className="h-3 w-3 text-white" />
-                  </div>
-                )}
-                {/* Preview Swatch */}
-                <div
+        <CardContent className="space-y-6">
+          {/* Preset Grid */}
+          <div className="space-y-2">
+            <Label>Preset Desain</Label>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {presetOptions.map((preset) => (
+                <Button
+                  key={preset.id}
+                  type="button"
+                  variant="ghost"
+                  onClick={() => handlePresetSelect(preset.id)}
                   className={cn(
-                    "mb-3 flex h-16 items-end gap-1.5 rounded-lg p-2",
-                    preset.previewBg
+                    "group relative flex flex-col items-start justify-start h-auto w-full overflow-hidden rounded-xl border-2 p-4 text-left transition-all duration-150 whitespace-normal",
+                    selectedPreset === preset.id
+                      ? "border-emerald-500 ring-2 ring-emerald-500/20 bg-emerald-50/50 hover:bg-emerald-50/50"
+                      : "border-gray-200 hover:border-gray-300 hover:bg-transparent"
                   )}
                 >
+                  {selectedPreset === preset.id && (
+                    <div className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500">
+                      <Check className="h-3 w-3 text-white" />
+                    </div>
+                  )}
+                  {/* Preview Swatch */}
                   <div
                     className={cn(
-                      "h-3 w-8 rounded-sm",
-                      preset.previewAccent
+                      "mb-3 flex h-16 items-end gap-1.5 rounded-lg p-2 w-full",
+                      preset.previewBg
                     )}
+                  >
+                    <div
+                      className={cn(
+                        "h-3 w-8 rounded-sm",
+                        preset.previewAccent
+                      )}
+                    />
+                    <div
+                      className={cn(
+                        "h-2 w-12 rounded-sm opacity-30",
+                        preset.previewAccent
+                      )}
+                    />
+                  </div>
+                  <span className="text-sm font-semibold text-gray-900">
+                    {preset.label}
+                  </span>
+                  <span className="mt-0.5 text-xs text-gray-500">
+                    {preset.description}
+                  </span>
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {/* Color Picker Section */}
+          <div className="space-y-3 pt-2 border-t border-gray-100">
+            <div>
+              <Label>Warna Aksen Utama</Label>
+              <p className="text-xs text-gray-500 mt-0.5">
+                Pilih warna identitas tokomu. Warna ini akan digunakan untuk tombol, link, dan elemen sorotan di storefront.
+              </p>
+            </div>
+            
+            <div className="flex flex-wrap items-center gap-3">
+              {[
+                { value: "#059669", label: "Hijau" },
+                { value: "#fb7185", label: "Pink" },
+                { value: "#3b82f6", label: "Biru" },
+                { value: "#8b5cf6", label: "Ungu" },
+                { value: "#f59e0b", label: "Jingga" },
+                { value: "#18181b", label: "Hitam" },
+              ].map((swatch) => (
+                <button
+                  key={swatch.value}
+                  type="button"
+                  onClick={() => setPrimaryColor(swatch.value)}
+                  className={cn(
+                    "flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 shadow-sm transition-transform active:scale-90 hover:scale-105",
+                    primaryColor === swatch.value && "ring-2 ring-emerald-500 ring-offset-2"
+                  )}
+                  style={{ backgroundColor: swatch.value }}
+                  title={swatch.label}
+                >
+                  {primaryColor === swatch.value && (
+                    <Check className={cn(
+                      "h-4 w-4",
+                      swatch.value === "#f4f4f5" || swatch.value === "#fb7185" || swatch.value === "#f59e0b" ? "text-gray-900" : "text-white"
+                    )} />
+                  )}
+                </button>
+              ))}
+              
+              {/* Custom Color Input */}
+              <div className="flex items-center gap-2 border-l border-gray-200 pl-3">
+                <div 
+                  className="h-9 w-9 rounded-full border border-gray-200 shadow-sm relative overflow-hidden flex items-center justify-center cursor-pointer"
+                  style={{ backgroundColor: primaryColor }}
+                >
+                  <input
+                    type="color"
+                    value={primaryColor}
+                    onChange={(e) => setPrimaryColor(e.target.value)}
+                    className="absolute inset-0 opacity-0 cursor-pointer h-full w-full"
                   />
-                  <div
-                    className={cn(
-                      "h-2 w-12 rounded-sm opacity-30",
-                      preset.previewAccent
-                    )}
-                  />
+                  {!["#059669", "#fb7185", "#3b82f6", "#8b5cf6", "#f59e0b", "#18181b"].includes(primaryColor) && (
+                    <Check className="h-4 w-4 text-white mix-blend-difference" />
+                  )}
                 </div>
-                <span className="text-sm font-semibold text-gray-900">
-                  {preset.label}
-                </span>
-                <span className="mt-0.5 text-xs text-gray-500">
-                  {preset.description}
-                </span>
-              </Button>
-            ))}
+                <Input
+                  type="text"
+                  value={primaryColor}
+                  onChange={(e) => setPrimaryColor(e.target.value)}
+                  className="h-8 w-24 text-xs font-mono"
+                  placeholder="#000000"
+                />
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>

@@ -8,7 +8,10 @@ import type { TemplateTokens, TemplatePreset } from "@/lib/template-presets";
 import { X, Plus, Minus, Trash2, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+import { incrementWhatsAppClicks } from "@/app/actions/shop";
+
 interface CartDrawerProps {
+  shopId: string;
   shopName: string;
   shopWhatsapp: string;
   tokens: TemplateTokens;
@@ -16,6 +19,7 @@ interface CartDrawerProps {
 }
 
 export function CartDrawer({
+  shopId,
   shopName,
   shopWhatsapp,
   tokens,
@@ -47,6 +51,11 @@ export function CartDrawer({
       alert("Nomor WhatsApp toko belum diatur.");
       return;
     }
+
+    // Record click in background
+    incrementWhatsAppClicks(shopId).catch((err) => {
+      console.error("Gagal mencatat klik WA:", err);
+    });
 
     const url = compileWhatsAppCheckout({
       shopName,
