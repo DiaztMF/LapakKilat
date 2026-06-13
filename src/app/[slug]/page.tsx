@@ -9,6 +9,7 @@ import { ProductGrid } from "./_components/product-grid";
 import { FloatingCart } from "./_components/floating-cart";
 import { CartDrawer } from "./_components/cart-drawer";
 import { getTemplateTokens, type TemplatePreset } from "@/lib/template-presets";
+import { incrementShopViews } from "@/app/actions/shop";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -59,8 +60,26 @@ export default async function StorefrontPage({ params }: PageProps) {
     notFound();
   }
 
-  const tokens = getTemplateTokens(shopData.templatePreset as TemplatePreset);
+  // Increment view count in background
+  incrementShopViews(shopData.id).catch((err) => {
+    console.error("Gagal mencatat kunjungan toko:", err);
+  });
+
+  const baseTokens = getTemplateTokens(shopData.templatePreset as TemplatePreset);
   const products = shopData.products || [];
+
+  // Custom brand color overrides (jika bukan preset minimalist)
+  const isMinimalist = shopData.templatePreset === "minimalist";
+  const tokens = isMinimalist
+    ? baseTokens
+    : {
+        ...baseTokens,
+        accent: "custom-brand-bg",
+        accentText: "text-white",
+        accentHover: "custom-brand-hover",
+        badgeBg: "custom-brand-bg-light",
+        badgeText: "custom-brand-text",
+      };
 
   // Extract unique categories
   const categories = [
@@ -76,6 +95,24 @@ export default async function StorefrontPage({ params }: PageProps) {
 
   return (
     <div className={`min-h-screen ${tokens.canvas}`}>
+      {/* Inject warna primer kustom */}
+      {!isMinimalist && shopData.primaryColor && (
+        <style dangerouslySetInnerHTML={{ __html: `
+          .custom-brand-bg {
+            background-color: ${shopData.primaryColor} !important;
+          }
+          .custom-brand-text {
+            color: ${shopData.primaryColor} !important;
+          }
+          .custom-brand-hover:hover {
+            filter: brightness(0.9) !important;
+            opacity: 0.95 !important;
+          }
+          .custom-brand-bg-light {
+            background-color: ${shopData.primaryColor}15 !important; /* ~8% opacity */
+          }
+        ` }} />
+      )}
       <div className="mx-auto max-w-md">
         <StorefrontHeader shop={shopData} tokens={tokens} />
         <CategoryTabs
@@ -93,6 +130,7 @@ export default async function StorefrontPage({ params }: PageProps) {
           preset={shopData.templatePreset as TemplatePreset}
         />
         <CartDrawer
+          shopId={shopData.id}
           shopName={shopData.name}
           shopWhatsapp={shopData.whatsapp || ""}
           tokens={tokens}

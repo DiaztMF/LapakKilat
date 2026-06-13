@@ -80,6 +80,9 @@ export const shop = pgTable("shop", {
   templatePreset: templatePresetEnum("template_preset")
     .notNull()
     .default("fresh"),
+  primaryColor: text("primary_color").notNull().default("#059669"),
+  views: integer("views").notNull().default(0),
+  whatsappClicks: integer("whatsapp_clicks").notNull().default(0),
   isPublished: boolean("is_published").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),

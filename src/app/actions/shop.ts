@@ -37,6 +37,7 @@ export async function updateShopProfile(formData: FormData) {
     | "fresh"
     | "playful"
     | "minimalist";
+  const primaryColor = formData.get("primaryColor") as string;
 
   if (!name || name.trim().length === 0) {
     return { error: "Nama toko wajib diisi." };
@@ -69,13 +70,90 @@ export async function updateShopProfile(formData: FormData) {
       profileImage: profileImage || null,
       bannerImage: bannerImage || null,
       templatePreset: templatePreset || "fresh",
+      primaryColor: primaryColor || "#059669",
       isPublished: true,
       updatedAt: new Date(),
     })
     .where(eq(shop.userId, user.id));
 
   revalidatePath("/dashboard/profil");
+  revalidatePath("/dashboard");
   revalidatePath(`/${newSlug}`);
 
   return { success: true, slug: newSlug };
 }
+
+export async function incrementShopViews(shopId: string) {
+  try {
+    const existingShop = await db.query.shop.findFirst({
+      where: eq(shop.id, shopId),
+    });
+    if (!existingShop) return { error: "Toko tidak ditemukan." };
+
+    await db
+      .update(shop)
+      .set({
+        views: (existingShop.views || 0) + 1,
+      })
+      .where(eq(shop.id, shopId));
+
+    revalidatePath("/dashboard");
+    return { success: true };
+  } catch (error) {
+    console.error("Gagal menambahkan view:", error);
+    return { error: "Gagal memproses analitik." };
+  }
+}
+
+export async function incrementWhatsAppClicks(shopId: string) {
+  try {
+    const existingShop = await db.query.shop.findFirst({
+      where: eq(shop.id, shopId),
+    });
+    if (!existingShop) return { error: "Toko tidak ditemukan." };
+
+    await db
+      .update(shop)
+      .set({
+        whatsappClicks: (existingShop.whatsappClicks || 0) + 1,
+      })
+      .where(eq(shop.id, shopId));
+
+    revalidatePath("/dashboard");
+    return { success: true };
+  } catch (error) {
+    console.error("Gagal menambahkan klik WA:", error);
+    return { error: "Gagal memproses analitik." };
+  }
+}
+
+export async function toggleShopPublishStatus() {
+  try {
+    const user = await getAuthenticatedUser();
+    const existingShop = await db.query.shop.findFirst({
+      where: eq(shop.userId, user.id),
+    });
+
+    if (!existingShop) return { error: "Toko tidak ditemukan." };
+
+    const newStatus = !existingShop.isPublished;
+
+    await db
+      .update(shop)
+      .set({
+        isPublished: newStatus,
+        updatedAt: new Date(),
+      })
+      .where(eq(shop.userId, user.id));
+
+    revalidatePath("/dashboard/profil");
+    revalidatePath("/dashboard");
+    revalidatePath(`/${existingShop.slug}`);
+
+    return { success: true, isPublished: newStatus };
+  } catch (error) {
+    console.error("Gagal mengubah status publish:", error);
+    return { error: "Gagal mengubah status publikasi toko." };
+  }
+}
+

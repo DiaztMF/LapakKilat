@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LogOut, Store, Package, Zap } from "lucide-react";
+import { LogOut, Store, Package, Zap, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface DashboardNavProps {
@@ -18,6 +18,12 @@ interface DashboardNavProps {
 }
 
 const navItems = [
+  {
+    href: "/dashboard",
+    label: "Ringkasan",
+    icon: LayoutDashboard,
+    exact: true,
+  },
   {
     href: "/dashboard/profil",
     label: "Profil Toko",
@@ -55,7 +61,9 @@ export function DashboardNav({ user }: DashboardNavProps) {
         {/* Navigation Links */}
         <div className="flex items-center gap-1">
           {navItems.map((item) => {
-            const isActive = pathname.startsWith(item.href);
+            const isActive = item.exact
+              ? pathname === item.href
+              : pathname.startsWith(item.href);
             return (
               <Link
                 key={item.href}

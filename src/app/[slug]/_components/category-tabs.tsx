@@ -24,24 +24,13 @@ export function CategoryTabs({ categories, tokens, preset }: CategoryTabsProps) 
 
   const getTabStyles = (isActive: boolean) => {
     if (isActive) {
-      switch (preset) {
-        case "fresh":
-          return "bg-emerald-600 text-white";
-        case "playful":
-          return "bg-rose-400 text-white";
-        case "minimalist":
-          return "bg-zinc-100 text-zinc-950";
-      }
+      return cn(tokens.accent, tokens.accentText);
     }
-
-    switch (preset) {
-      case "fresh":
-        return "bg-emerald-50 text-emerald-700 hover:bg-emerald-100";
-      case "playful":
-        return "bg-rose-100 text-rose-600 hover:bg-rose-200";
-      case "minimalist":
-        return "bg-zinc-800 text-zinc-300 hover:bg-zinc-700";
-    }
+    return cn(
+      tokens.badgeBg, 
+      tokens.badgeText, 
+      preset === "minimalist" ? "hover:bg-zinc-700" : "hover:opacity-90"
+    );
   };
 
   if (categories.length <= 1) return null;

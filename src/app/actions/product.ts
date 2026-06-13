@@ -136,3 +136,45 @@ export async function deleteProduct(productId: string) {
 
   return { success: true };
 }
+
+export async function toggleProductAvailability(productId: string, isAvailable: boolean) {
+  const userShop = await getAuthenticatedShop();
+
+  await db
+    .update(product)
+    .set({
+      isAvailable,
+      updatedAt: new Date(),
+    })
+    .where(
+      and(eq(product.id, productId), eq(product.shopId, userShop.id))
+    );
+
+  revalidatePath("/dashboard/produk");
+  revalidatePath(`/${userShop.slug}`);
+
+  return { success: true };
+}
+
+export async function reorderProducts(productIds: string[]) {
+  const userShop = await getAuthenticatedShop();
+
+  // Update order in batch
+  const promises = productIds.map((id, index) =>
+    db
+      .update(product)
+      .set({
+        sortOrder: index,
+        updatedAt: new Date(),
+      })
+      .where(and(eq(product.id, id), eq(product.shopId, userShop.id)))
+  );
+
+  await Promise.all(promises);
+
+  revalidatePath("/dashboard/produk");
+  revalidatePath(`/${userShop.slug}`);
+
+  return { success: true };
+}
+
