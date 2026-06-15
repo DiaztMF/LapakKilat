@@ -4,6 +4,8 @@ import { type TemplatePreset, getTemplateTokens } from "@/lib/template-presets";
 import { cn } from "@/lib/utils";
 import { ShoppingBag, ExternalLink, ShoppingCart } from "lucide-react";
 import { Android } from "@/components/ui/android";
+import { StorefrontFAQ } from "@/app/[slug]/_components/storefront-faq";
+import { StorefrontFooter } from "@/app/[slug]/_components/storefront-footer";
 
 interface StorefrontPreviewProps {
   name: string;
@@ -14,6 +16,13 @@ interface StorefrontPreviewProps {
   preset: TemplatePreset;
   primaryColor: string;
   slug: string;
+  operationalHours?: string;
+  address?: string;
+  googleMapsUrl?: string;
+  instagramUrl?: string;
+  facebookUrl?: string;
+  tiktokUrl?: string;
+  faq?: { question: string; answer: string }[];
 }
 
 export function StorefrontPreview({
@@ -25,6 +34,13 @@ export function StorefrontPreview({
   preset,
   primaryColor,
   slug,
+  operationalHours = "",
+  address = "",
+  googleMapsUrl = "",
+  instagramUrl = "",
+  facebookUrl = "",
+  tiktokUrl = "",
+  faq = [],
 }: StorefrontPreviewProps) {
   const baseTokens = getTemplateTokens(preset);
   const isMinimalist = preset === "minimalist";
@@ -89,10 +105,10 @@ export function StorefrontPreview({
       )}
 
       {/* Device Wrapper using Magic UI Android Mockup */}
-      <div className="relative mx-auto w-[270px] h-[550px] drop-shadow-2xl">
-        <Android className="w-full h-full" width={270} height={550}>
+      <div className="relative mx-auto w-full max-w-[430px] aspect-[433/882] drop-shadow-2xl">
+        <Android className="w-full h-full" width={430} height={882}>
           {/* Inner Web Page Container (layout size is 360x800) */}
-          <div className="relative w-full h-full bg-white flex flex-col select-none">
+          <div className="relative w-full h-full bg-white flex flex-col select-none overflow-y-auto">
 
             {/* Browser Mock Bar */}
             <div className="h-10 bg-gray-100 border-b border-gray-200 px-3.5 flex items-center shrink-0 z-20">
@@ -270,6 +286,36 @@ export function StorefrontPreview({
                   </div>
                 ))}
               </div>
+
+              {/* FAQ Section */}
+              <div className="px-4 pb-4">
+                <StorefrontFAQ 
+                  shop={{
+                    name: displayName,
+                    whatsapp: _whatsapp || null,
+                    operationalHours: operationalHours || null,
+                    address: address || null,
+                    faq: faq
+                  }}
+                  tokens={tokens}
+                />
+              </div>
+
+              {/* Footer Section */}
+              <StorefrontFooter 
+                shop={{
+                  name: displayName,
+                  slogan: displaySlogan || null,
+                  whatsapp: _whatsapp || null,
+                  operationalHours: operationalHours || null,
+                  address: address || null,
+                  googleMapsUrl: googleMapsUrl || null,
+                  instagramUrl: instagramUrl || null,
+                  facebookUrl: facebookUrl || null,
+                  tiktokUrl: tiktokUrl || null
+                }}
+                tokens={tokens}
+              />
             </div>
 
             {/* Mock Floating Cart */}

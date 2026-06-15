@@ -38,6 +38,19 @@ export async function updateShopProfile(formData: FormData) {
     | "playful"
     | "minimalist";
   const primaryColor = formData.get("primaryColor") as string;
+  const operationalHours = formData.get("operationalHours") as string;
+  const address = formData.get("address") as string;
+  const googleMapsUrl = formData.get("googleMapsUrl") as string;
+  const instagramUrl = formData.get("instagramUrl") as string;
+  const facebookUrl = formData.get("facebookUrl") as string;
+  const tiktokUrl = formData.get("tiktokUrl") as string;
+  const faqString = formData.get("faq") as string;
+  let faqList = [];
+  try {
+    faqList = faqString ? JSON.parse(faqString) : [];
+  } catch (e) {
+    console.error("Gagal mem-parse faq:", e);
+  }
 
   if (!name || name.trim().length === 0) {
     return { error: "Nama toko wajib diisi." };
@@ -71,6 +84,13 @@ export async function updateShopProfile(formData: FormData) {
       bannerImage: bannerImage || null,
       templatePreset: templatePreset || "fresh",
       primaryColor: primaryColor || "#059669",
+      operationalHours: operationalHours?.trim() || null,
+      address: address?.trim() || null,
+      googleMapsUrl: googleMapsUrl?.trim() || null,
+      instagramUrl: instagramUrl?.trim() || null,
+      facebookUrl: facebookUrl?.trim() || null,
+      tiktokUrl: tiktokUrl?.trim() || null,
+      faq: faqList,
       updatedAt: new Date(),
     })
     .where(eq(shop.userId, user.id));

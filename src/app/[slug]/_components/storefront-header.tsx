@@ -16,7 +16,7 @@ export function StorefrontHeader({ shop, tokens }: StorefrontHeaderProps) {
   return (
     <header className="relative">
       {/* Banner */}
-      <div className="relative h-40 w-full overflow-hidden bg-gray-200">
+      <div className="relative h-40 md:h-64 lg:h-80 w-full overflow-hidden bg-gray-200">
         {shop.bannerImage ? (
           <Image
             src={shop.bannerImage}
@@ -33,10 +33,10 @@ export function StorefrontHeader({ shop, tokens }: StorefrontHeaderProps) {
       {/* Profile + Info */}
       <div className="relative px-4 pb-4">
         {/* Profile Image */}
-        <div className="-mt-10 mb-3 flex justify-center">
+        <div className="-mt-10 md:-mt-16 mb-4 flex justify-center">
           <div
             className={cn(
-              "h-20 w-20 overflow-hidden rounded-full border-4 bg-white",
+              "h-20 w-20 md:h-32 md:w-32 overflow-hidden rounded-full border-4 bg-white shadow-sm flex items-center justify-center shrink-0",
               tokens.canvas === "bg-zinc-950"
                 ? "border-zinc-900"
                 : "border-white"
@@ -46,14 +46,14 @@ export function StorefrontHeader({ shop, tokens }: StorefrontHeaderProps) {
               <Image
                 src={shop.profileImage}
                 alt={shop.name}
-                width={80}
-                height={80}
+                width={128}
+                height={128}
                 className="h-full w-full object-cover"
               />
             ) : (
               <div
                 className={cn(
-                  "flex h-full w-full items-center justify-center text-2xl font-bold",
+                  "flex h-full w-full items-center justify-center text-2xl md:text-4xl font-bold",
                   tokens.accent,
                   tokens.accentText
                 )}
@@ -65,12 +65,12 @@ export function StorefrontHeader({ shop, tokens }: StorefrontHeaderProps) {
         </div>
 
         {/* Shop Info */}
-        <div className="text-center">
-          <h1 className={cn("text-xl font-bold", tokens.text)}>
+        <div className="text-center max-w-3xl mx-auto px-4">
+          <h1 className={cn("text-xl md:text-3xl lg:text-4xl font-bold", tokens.text)}>
             {shop.name}
           </h1>
           {shop.slogan && (
-            <p className={cn("mt-1 text-sm", tokens.muted)}>
+            <p className={cn("mt-2 text-sm md:text-base leading-relaxed", tokens.muted)}>
               {shop.slogan}
             </p>
           )}

@@ -65,7 +65,7 @@ export function ProductGrid({ products, tokens, preset }: ProductGridProps) {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-3 px-4 pb-32">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3 px-4 pb-4">
       {filteredProducts.map((product) => (
         <div
           key={product.id}
@@ -109,7 +109,7 @@ export function ProductGrid({ products, tokens, preset }: ProductGridProps) {
           </div>
 
           {/* Product Info */}
-          <div className="p-3">
+          <div className="p-3 md:p-2.5">
             <h3
               className={cn(
                 "line-clamp-1 text-sm font-semibold",
@@ -122,7 +122,7 @@ export function ProductGrid({ products, tokens, preset }: ProductGridProps) {
             {product.category && (
               <span
                 className={cn(
-                  "mt-1 inline-block px-2 py-0.5 text-xs",
+                  "mt-1 inline-block px-1.5 py-0.5 text-[10px] md:text-xs",
                   tokens.radius,
                   tokens.badgeBg,
                   tokens.badgeText
@@ -134,7 +134,7 @@ export function ProductGrid({ products, tokens, preset }: ProductGridProps) {
 
             <p
               className={cn(
-                "mt-2 text-base font-bold",
+                "mt-2 text-base md:text-sm font-bold",
                 preset === "fresh"
                   ? "text-emerald-600"
                   : preset === "playful"
@@ -150,7 +150,7 @@ export function ProductGrid({ products, tokens, preset }: ProductGridProps) {
               variant="ghost"
               onClick={() => handleAddToCart(product)}
               className={cn(
-                "mt-2 w-full py-2.5 text-sm font-semibold transition-all duration-150 ease-in-out active:scale-95",
+                "mt-2 w-full py-2.5 md:py-2 text-sm md:text-xs font-semibold transition-all duration-150 ease-in-out active:scale-95",
                 tokens.radius,
                 tokens.accent,
                 tokens.accentText,
