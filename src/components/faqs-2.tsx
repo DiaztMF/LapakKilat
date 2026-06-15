@@ -61,7 +61,7 @@ export default function FAQsTwo() {
                     <p className="text-gray-500 mt-6 text-center text-sm">
                         Masih punya pertanyaan lain? Hubungi{' '}
                         <Link
-                            href="https://wa.me/6281234567890"
+                            href="https://wa.me/62895800238266?text=Halo,%20saya%20butuh%20bantuan%20terkait%20LapakKilat"
                             target="_blank"
                             className="text-emerald-600 font-semibold hover:underline">
                             Layanan Pelanggan kami

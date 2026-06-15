@@ -102,13 +102,14 @@ export default function Pricing({ onGetStarted }: PricingProps) {
                             </CardTitle>
                             <span className="my-3 block text-3xl font-bold text-gray-900">Hubungi Kami</span>
                             <CardDescription className="text-sm text-gray-500">Untuk kemitraan UMKM binaan atau multi-cabang.</CardDescription>
-                            <Button 
-                                variant="outline"
-                                onClick={onGetStarted}
-                                className="mt-6 w-full cursor-pointer"
-                            >
-                                Hubungi Tim
-                            </Button>
+                            <a href="https://wa.me/62895800238266?text=Halo,%20saya%20tertarik%20dengan%20Paket%20Kustom/Agen%20di%20LapakKilat" target="_blank" rel="noreferrer" className="block w-full mt-6">
+                                <Button 
+                                    variant="outline"
+                                    className="w-full cursor-pointer"
+                                >
+                                    Hubungi Tim
+                                </Button>
+                            </a>
                         </CardHeader>
 
                         <CardContent className="p-0 flex-1">

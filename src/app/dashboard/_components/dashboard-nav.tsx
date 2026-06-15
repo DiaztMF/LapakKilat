@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { LogOut, Store, Package, Zap, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/logo";
 
 interface DashboardNavProps {
   user: {
@@ -49,13 +50,8 @@ export function DashboardNav({ user }: DashboardNavProps) {
     <nav className="sticky top-0 z-50 h-16 border-b border-gray-200/80 bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600">
-            <Zap className="h-4 w-4 text-white" />
-          </div>
-          <span className="text-lg font-bold text-gray-900">
-            Lapak<span className="text-emerald-600">Kilat</span>
-          </span>
+        <Link href="/">
+          <Logo />
         </Link>
 
         {/* Navigation Links */}
