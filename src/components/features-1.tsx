@@ -24,7 +24,6 @@ export default function FeaturesSection() {
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
           {/* Card 1: Tanpa Coding */}
           <Card
-            variant="outline"
             className="row-span-2 grid grid-rows-subgrid border border-gray-100 p-6 hover:border-emerald-200 hover:shadow-md hover:shadow-emerald-50/50 transition-all duration-300 group"
           >
             <div className="space-y-2">
@@ -83,7 +82,6 @@ export default function FeaturesSection() {
 
           {/* Card 2: QR Code Otomatis */}
           <Card
-            variant="outline"
             className="row-span-2 grid grid-rows-subgrid overflow-hidden border border-gray-100 p-6 hover:border-emerald-200 hover:shadow-md hover:shadow-emerald-50/50 transition-all duration-300 group"
           >
             <div className="space-y-2">
@@ -113,7 +111,6 @@ export default function FeaturesSection() {
 
           {/* Card 3: Tampilan Mobile-First */}
           <Card
-            variant="outline"
             className="row-span-2 grid grid-rows-subgrid overflow-hidden border border-gray-100 p-6 hover:border-emerald-200 hover:shadow-md hover:shadow-emerald-50/50 transition-all duration-300 group"
           >
             <div className="space-y-2">
@@ -166,7 +163,6 @@ export default function FeaturesSection() {
 
           {/* Card 4: Checkout via WhatsApp */}
           <Card
-            variant="outline"
             className="row-span-2 grid grid-rows-subgrid overflow-hidden border border-gray-100 p-6 hover:border-emerald-200 hover:shadow-md hover:shadow-emerald-50/50 transition-all duration-300 group"
           >
             <div className="space-y-2">

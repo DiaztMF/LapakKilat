@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { 
   Dialog, 
   DialogContent, 
@@ -71,9 +70,11 @@ export function ProductList({
   const [sorting, setSorting] = useState(false);
 
   // Sync state if initialProducts changes (e.g. after Dialog closes or server mutations)
-  useEffect(() => {
+  const [prevInitialProducts, setPrevInitialProducts] = useState<Product[]>(initialProducts);
+  if (initialProducts !== prevInitialProducts) {
     setProducts(initialProducts);
-  }, [initialProducts]);
+    setPrevInitialProducts(initialProducts);
+  }
 
   // Extract unique categories
   const categories = Array.from(
@@ -280,7 +281,7 @@ export function ProductList({
           )}
         </Card>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {filteredProducts.map((product, index) => (
             <Card
               key={product.id}

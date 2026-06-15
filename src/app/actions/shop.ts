@@ -1,10 +1,10 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { shop } from "@/lib/db/schema";
+import { shop, shopAnalytics } from "@/lib/db/schema";
 import { auth } from "@/lib/auth";
 import { slugify } from "@/lib/utils";
-import { eq } from "drizzle-orm";
+import { eq, and, gte } from "drizzle-orm";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { nanoid } from "nanoid";
@@ -71,7 +71,6 @@ export async function updateShopProfile(formData: FormData) {
       bannerImage: bannerImage || null,
       templatePreset: templatePreset || "fresh",
       primaryColor: primaryColor || "#059669",
-      isPublished: true,
       updatedAt: new Date(),
     })
     .where(eq(shop.userId, user.id));
@@ -90,12 +89,42 @@ export async function incrementShopViews(shopId: string) {
     });
     if (!existingShop) return { error: "Toko tidak ditemukan." };
 
+    // Update total views di tabel shop
     await db
       .update(shop)
       .set({
         views: (existingShop.views || 0) + 1,
       })
       .where(eq(shop.id, shopId));
+
+    // Update/Insert di tabel shopAnalytics untuk hari ini
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const existingAnalytics = await db.query.shopAnalytics.findFirst({
+      where: and(
+        eq(shopAnalytics.shopId, shopId),
+        eq(shopAnalytics.date, today)
+      ),
+    });
+
+    if (existingAnalytics) {
+      await db
+        .update(shopAnalytics)
+        .set({
+          views: existingAnalytics.views + 1,
+          updatedAt: new Date(),
+        })
+        .where(eq(shopAnalytics.id, existingAnalytics.id));
+    } else {
+      await db.insert(shopAnalytics).values({
+        id: nanoid(),
+        shopId,
+        date: today,
+        views: 1,
+        whatsappClicks: 0,
+      });
+    }
 
     revalidatePath("/dashboard");
     return { success: true };
@@ -112,6 +141,7 @@ export async function incrementWhatsAppClicks(shopId: string) {
     });
     if (!existingShop) return { error: "Toko tidak ditemukan." };
 
+    // Update total clicks di tabel shop
     await db
       .update(shop)
       .set({
@@ -119,11 +149,88 @@ export async function incrementWhatsAppClicks(shopId: string) {
       })
       .where(eq(shop.id, shopId));
 
+    // Update/Insert di tabel shopAnalytics untuk hari ini
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const existingAnalytics = await db.query.shopAnalytics.findFirst({
+      where: and(
+        eq(shopAnalytics.shopId, shopId),
+        eq(shopAnalytics.date, today)
+      ),
+    });
+
+    if (existingAnalytics) {
+      await db
+        .update(shopAnalytics)
+        .set({
+          whatsappClicks: existingAnalytics.whatsappClicks + 1,
+          updatedAt: new Date(),
+        })
+        .where(eq(shopAnalytics.id, existingAnalytics.id));
+    } else {
+      await db.insert(shopAnalytics).values({
+        id: nanoid(),
+        shopId,
+        date: today,
+        views: 0,
+        whatsappClicks: 1,
+      });
+    }
+
     revalidatePath("/dashboard");
     return { success: true };
   } catch (error) {
     console.error("Gagal menambahkan klik WA:", error);
     return { error: "Gagal memproses analitik." };
+  }
+}
+
+export async function getShopDailyAnalytics() {
+  try {
+    const user = await getAuthenticatedUser();
+    const existingShop = await db.query.shop.findFirst({
+      where: eq(shop.userId, user.id),
+    });
+
+    if (!existingShop) throw new Error("Toko tidak ditemukan.");
+
+    const analyticsData = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const sevenDaysAgo = new Date(today);
+    sevenDaysAgo.setDate(today.getDate() - 6);
+
+    const dbAnalytics = await db.query.shopAnalytics.findMany({
+      where: and(
+        eq(shopAnalytics.shopId, existingShop.id),
+        gte(shopAnalytics.date, sevenDaysAgo)
+      ),
+      orderBy: (sa, { asc }) => [asc(sa.date)],
+    });
+
+    const daysOfWeek = ["Ahd", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
+    
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      
+      const match = dbAnalytics.find(
+        (a) => new Date(a.date).toDateString() === d.toDateString()
+      );
+      
+      analyticsData.push({
+        day: daysOfWeek[d.getDay()],
+        views: match ? match.views : 0,
+        clicks: match ? match.whatsappClicks : 0,
+      });
+    }
+
+    return analyticsData;
+  } catch (error) {
+    console.error("Gagal mengambil analitik harian:", error);
+    return [];
   }
 }
 

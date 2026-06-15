@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { Logo } from '@/components/logo'
 import { Menu, X } from 'lucide-react'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import React from 'react'
 import { cn } from '@/lib/utils'
 
@@ -15,7 +15,7 @@ const menuItems = [
 ]
 
 interface HeroHeaderProps {
-    session: any;
+    session: unknown;
     onGetStarted: () => void;
 }
 

@@ -1,4 +1,4 @@
-import { getShopByUser, toggleShopPublishStatus } from "@/app/actions/shop";
+import { getShopByUser, toggleShopPublishStatus, getShopDailyAnalytics } from "@/app/actions/shop";
 import { getProducts } from "@/app/actions/product";
 import { redirect } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -20,12 +20,15 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { QuickShareButton } from "./_components/quick-share-button";
 import { PublishToggleButton } from "./_components/publish-toggle-button";
+import { VisitsChart } from "./_components/visits-chart";
 
 export default async function DashboardPage() {
   const shop = await getShopByUser();
   if (!shop) {
     redirect("/");
   }
+
+  const analytics = await getShopDailyAnalytics();
 
   const products = await getProducts();
   const productCount = products.length;
@@ -164,70 +167,8 @@ export default async function DashboardPage() {
       <div className="grid gap-8 lg:grid-cols-3">
         {/* Left column: Chart & Quick Actions */}
         <div className="space-y-8 lg:col-span-2">
-          {/* Visual SVG Chart Card */}
-          <Card>
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-lg font-bold">Tren Kunjungan</CardTitle>
-                  <CardDescription>Visualisasi aktivitas toko 7 hari terakhir (Ilustrasi)</CardDescription>
-                </div>
-                <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 font-medium">
-                  Metrik Gabungan
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="pt-4">
-              <div className="relative h-48 w-full">
-                {/* SVG Graph */}
-                <svg className="h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                  {/* Gradients */}
-                  <defs>
-                    <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#10b981" stopOpacity="0.25" />
-                      <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
-                    </linearGradient>
-                  </defs>
-                  
-                  {/* Grid Lines */}
-                  <line x1="0" y1="20" x2="100" y2="20" stroke="#f1f5f9" strokeWidth="0.5" />
-                  <line x1="0" y1="50" x2="100" y2="50" stroke="#f1f5f9" strokeWidth="0.5" />
-                  <line x1="0" y1="80" x2="100" y2="80" stroke="#f1f5f9" strokeWidth="0.5" />
-                  
-                  {/* Area */}
-                  <path
-                    d="M 0 100 L 0 75 Q 15 50 30 65 T 60 40 T 90 25 L 100 20 L 100 100 Z"
-                    fill="url(#chartGradient)"
-                  />
-                  
-                  {/* Line */}
-                  <path
-                    d="M 0 75 Q 15 50 30 65 T 60 40 T 90 25 L 100 20"
-                    fill="none"
-                    stroke="#10b981"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-
-                  {/* Chart Points */}
-                  <circle cx="30" cy="65" r="1.5" fill="#ffffff" stroke="#10b981" strokeWidth="1" />
-                  <circle cx="60" cy="40" r="1.5" fill="#ffffff" stroke="#10b981" strokeWidth="1" />
-                  <circle cx="90" cy="25" r="1.5" fill="#ffffff" stroke="#10b981" strokeWidth="1" />
-                </svg>
-              </div>
-              
-              {/* X Axis labels */}
-              <div className="mt-2 flex justify-between text-[10px] font-medium text-gray-400 px-1">
-                <span>Sen</span>
-                <span>Sel</span>
-                <span>Rab</span>
-                <span>Kam</span>
-                <span>Jum</span>
-                <span>Sab</span>
-                <span>Ahd</span>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Visual Recharts Chart Card */}
+          <VisitsChart data={analytics} />
 
           {/* Quick Actions */}
           <Card>

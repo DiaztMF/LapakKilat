@@ -23,7 +23,7 @@ export default function Testimonials() {
                         <CardContent className="p-0 flex-1 flex flex-col justify-between">
                             <blockquote className="space-y-6 flex-1 flex flex-col justify-between">
                                 <p className="text-gray-600 italic leading-relaxed">
-                                    "Sebelumnya saya bingung kalau mau kirim daftar menu makanan lewat WhatsApp, harus ketik satu-satu. Sekarang tinggal kirim link LapakKilat, pelanggan langsung pilih dan pesan. Sangat praktis dan menghemat waktu!"
+                                    &ldquo;Sebelumnya saya bingung kalau mau kirim daftar menu makanan lewat WhatsApp, harus ketik satu-satu. Sekarang tinggal kirim link LapakKilat, pelanggan langsung pilih dan pesan. Sangat praktis dan menghemat waktu!&rdquo;
                                 </p>
 
                                 <div className="flex items-center gap-3 mt-4">
@@ -51,7 +51,7 @@ export default function Testimonials() {
                         <CardContent className="p-0 flex-1 flex flex-col justify-between">
                             <blockquote className="space-y-6 flex-1 flex flex-col justify-between">
                                 <p className="text-gray-600 italic leading-relaxed">
-                                    "Bikin katalog online di sini beneran gratis dan gampang banget. Saya gaptek masalah coding, tapi dalam 5 menit toko baju saya langsung punya web profesional. Fitur QR Code-nya saya cetak lalu pajang di toko offline."
+                                    &ldquo;Bikin katalog online di sini beneran gratis dan gampang banget. Saya gaptek masalah coding, tapi dalam 5 menit toko baju saya langsung punya web profesional. Fitur QR Code-nya saya cetak lalu pajang di toko offline.&rdquo;
                                 </p>
 
                                 <div className="flex items-center gap-3 mt-4">
@@ -79,7 +79,7 @@ export default function Testimonials() {
                         <CardContent className="p-0 flex-1 flex flex-col justify-between">
                             <blockquote className="space-y-6 flex-1 flex flex-col justify-between">
                                 <p className="text-gray-600 italic leading-relaxed">
-                                    "Fitur checkout langsung masuk ke WhatsApp itu yang paling juara. Pelanggan gak ribet bikin akun dulu, pesanan masuk rapi beserta total harga. Sangat memudahkan operasional bisnis kue rumahan saya."
+                                    &ldquo;Fitur checkout langsung masuk ke WhatsApp itu yang paling juara. Pelanggan gak ribet bikin akun dulu, pesanan masuk rapi beserta total harga. Sangat memudahkan operasional bisnis kue rumahan saya.&rdquo;
                                 </p>
 
                                 <div className="flex items-center gap-3 mt-4">

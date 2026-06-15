@@ -88,6 +88,18 @@ export const shop = pgTable("shop", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const shopAnalytics = pgTable("shop_analytics", {
+  id: text("id").primaryKey(),
+  shopId: text("shop_id")
+    .notNull()
+    .references(() => shop.id, { onDelete: "cascade" }),
+  date: timestamp("date").notNull(),
+  views: integer("views").notNull().default(0),
+  whatsappClicks: integer("whatsapp_clicks").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
 export const product = pgTable("product", {
   id: text("id").primaryKey(),
   shopId: text("shop_id")
@@ -121,6 +133,14 @@ export const shopRelations = relations(shop, ({ one, many }) => ({
     references: [user.id],
   }),
   products: many(product),
+  analytics: many(shopAnalytics),
+}));
+
+export const shopAnalyticsRelations = relations(shopAnalytics, ({ one }) => ({
+  shop: one(shop, {
+    fields: [shopAnalytics.shopId],
+    references: [shop.id],
+  }),
 }));
 
 export const productRelations = relations(product, ({ one }) => ({
