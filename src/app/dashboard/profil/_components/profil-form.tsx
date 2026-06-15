@@ -117,7 +117,7 @@ export function ProfilForm({ shop }: { shop: Shop }) {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Nama Toko *</Label>
+            <Label htmlFor="name">Nama Toko</Label>
             <Input
               id="name"
               name="name"
