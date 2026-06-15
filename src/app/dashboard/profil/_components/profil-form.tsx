@@ -177,9 +177,6 @@ export function ProfilForm({ shop }: { shop: Shop }) {
                 placeholder="Contoh: 6281234567890"
                 type="tel"
               />
-              <p className="text-xs text-gray-400">
-                Nomor akan dikonversi otomatis ke format kode negara (62). Contoh: 6281234567890
-              </p>
             </div>
           </CardContent>
         </Card>
