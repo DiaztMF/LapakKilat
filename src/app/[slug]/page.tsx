@@ -8,6 +8,8 @@ import { CategoryTabs } from "./_components/category-tabs";
 import { ProductGrid } from "./_components/product-grid";
 import { FloatingCart } from "./_components/floating-cart";
 import { CartDrawer } from "./_components/cart-drawer";
+import { StorefrontFAQ } from "./_components/storefront-faq";
+import { StorefrontFooter } from "./_components/storefront-footer";
 import { getTemplateTokens, type TemplatePreset } from "@/lib/template-presets";
 import { incrementShopViews } from "@/app/actions/shop";
 
@@ -113,8 +115,9 @@ export default async function StorefrontPage({ params }: PageProps) {
           }
         ` }} />
       )}
-      <div className="mx-auto max-w-md">
-        <StorefrontHeader shop={shopData} tokens={tokens} />
+      <StorefrontHeader shop={shopData} tokens={tokens} />
+
+      <div className="mx-auto max-w-md md:max-w-4xl lg:max-w-6xl px-4 py-2 md:py-3 space-y-5">
         <CategoryTabs
           categories={categories}
           tokens={tokens}
@@ -125,18 +128,24 @@ export default async function StorefrontPage({ params }: PageProps) {
           tokens={tokens}
           preset={shopData.templatePreset as TemplatePreset}
         />
-        <FloatingCart
-          tokens={tokens}
-          preset={shopData.templatePreset as TemplatePreset}
-        />
-        <CartDrawer
-          shopId={shopData.id}
-          shopName={shopData.name}
-          shopWhatsapp={shopData.whatsapp || ""}
-          tokens={tokens}
-          preset={shopData.templatePreset as TemplatePreset}
-        />
+        <StorefrontFAQ shop={shopData} tokens={tokens} />
       </div>
+
+      {/* Storefront Footer */}
+      <StorefrontFooter shop={shopData} tokens={tokens} />
+
+      {/* Global Cart UI Components */}
+      <FloatingCart
+        tokens={tokens}
+        preset={shopData.templatePreset as TemplatePreset}
+      />
+      <CartDrawer
+        shopId={shopData.id}
+        shopName={shopData.name}
+        shopWhatsapp={shopData.whatsapp || ""}
+        tokens={tokens}
+        preset={shopData.templatePreset as TemplatePreset}
+      />
     </div>
   );
 }

@@ -26,6 +26,13 @@ interface Shop {
   templatePreset: "fresh" | "playful" | "minimalist";
   primaryColor: string;
   isPublished: boolean;
+  operationalHours?: string | null;
+  address?: string | null;
+  googleMapsUrl?: string | null;
+  instagramUrl?: string | null;
+  facebookUrl?: string | null;
+  tiktokUrl?: string | null;
+  faq?: { question: string; answer: string }[] | null;
 }
 
 export function ProfilForm({ shop }: { shop: Shop }) {
@@ -33,7 +40,7 @@ export function ProfilForm({ shop }: { shop: Shop }) {
   const [loading, setLoading] = useState(false);
   const [uploadingProfile, setUploadingProfile] = useState(false);
   const [uploadingBanner, setUploadingBanner] = useState(false);
-  
+
   // Interactive Live Preview State
   const [name, setName] = useState(shop.name || "");
   const [slogan, setSlogan] = useState(shop.slogan || "");
@@ -44,6 +51,13 @@ export function ProfilForm({ shop }: { shop: Shop }) {
     shop.templatePreset
   );
   const [primaryColor, setPrimaryColor] = useState(shop.primaryColor || "#059669");
+  const [operationalHours, setOperationalHours] = useState(shop.operationalHours || "");
+  const [address, setAddress] = useState(shop.address || "");
+  const [googleMapsUrl, setGoogleMapsUrl] = useState(shop.googleMapsUrl || "");
+  const [instagramUrl, setInstagramUrl] = useState(shop.instagramUrl || "");
+  const [facebookUrl, setFacebookUrl] = useState(shop.facebookUrl || "");
+  const [tiktokUrl, setTiktokUrl] = useState(shop.tiktokUrl || "");
+  const [faqList, setFaqList] = useState<{ question: string; answer: string }[]>(shop.faq || []);
 
   // Sidebar Tabs State
   const [activeSidebarTab, setActiveSidebarTab] = useState<"preview" | "qrcode">("preview");
@@ -113,6 +127,13 @@ export function ProfilForm({ shop }: { shop: Shop }) {
     formData.set("templatePreset", selectedPreset);
     formData.set("primaryColor", primaryColor);
     formData.set("whatsapp", whatsapp);
+    formData.set("operationalHours", operationalHours);
+    formData.set("address", address);
+    formData.set("googleMapsUrl", googleMapsUrl);
+    formData.set("instagramUrl", instagramUrl);
+    formData.set("facebookUrl", facebookUrl);
+    formData.set("tiktokUrl", tiktokUrl);
+    formData.set("faq", JSON.stringify(faqList));
 
     try {
       const result = await updateShopProfile(formData);
@@ -130,9 +151,9 @@ export function ProfilForm({ shop }: { shop: Shop }) {
   };
 
   return (
-    <div className="grid gap-8 lg:grid-cols-3">
+    <div className="grid gap-8 lg:grid-cols-12">
       {/* Form Area */}
-      <form onSubmit={handleSubmit} className="space-y-6 lg:col-span-2">
+      <form onSubmit={handleSubmit} className="space-y-6 lg:col-span-7">
         {/* Informasi Toko */}
         <Card className="border border-gray-100 shadow-sm">
           <CardHeader>
@@ -294,6 +315,172 @@ export function ProfilForm({ shop }: { shop: Shop }) {
           </CardContent>
         </Card>
 
+        {/* Pengaturan FAQ Toko */}
+        <Card className="border border-gray-100 shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-lg font-bold">Pertanyaan yang Sering Diajukan (FAQ)</CardTitle>
+            <CardDescription>
+              Tambahkan pertanyaan dan jawaban khusus yang sering diajukan pembeli tokomu.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {faqList.length === 0 ? (
+              <div className="text-center py-6 border border-dashed border-gray-200 rounded-xl bg-gray-50/50">
+                <p className="text-sm text-gray-500 font-medium">Belum ada FAQ khusus.</p>
+                <p className="text-xs text-gray-400 mt-1 max-w-md mx-auto px-4">
+                  Bagian FAQ tidak akan ditampilkan pada halaman katalog Anda jika Anda tidak menambahkan pertanyaan khusus di sini.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {faqList.map((item, index) => (
+                  <div key={index} className="p-4 border border-gray-100 rounded-xl bg-gray-50/30 space-y-3 relative">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full">
+                        Pertanyaan #{index + 1}
+                      </span>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => {
+                          const updated = [...faqList];
+                          updated.splice(index, 1);
+                          setFaqList(updated);
+                        }}
+                        className="text-xs text-rose-600 hover:text-rose-700 hover:bg-rose-50 border border-transparent h-8 px-2 rounded-lg cursor-pointer"
+                      >
+                        <Trash2 className="h-3.5 w-3.5 mr-1" />
+                        Hapus
+                      </Button>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="text-xs">Pertanyaan</Label>
+                      <Input
+                        value={item.question}
+                        onChange={(e) => {
+                          const updated = [...faqList];
+                          updated[index].question = e.target.value;
+                          setFaqList(updated);
+                        }}
+                        placeholder="Contoh: Apakah bisa kirim ke luar kota?"
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="text-xs">Jawaban</Label>
+                      <Textarea
+                        value={item.answer}
+                        onChange={(e) => {
+                          const updated = [...faqList];
+                          updated[index].answer = e.target.value;
+                          setFaqList(updated);
+                        }}
+                        placeholder="Contoh: Ya, kami bisa mengirim ke seluruh kota di Indonesia melalui ekspedisi partner."
+                        rows={2}
+                        required
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setFaqList([...faqList, { question: "", answer: "" }]);
+              }}
+              className="w-full border-dashed border-gray-300 hover:border-gray-400 hover:bg-gray-50 cursor-pointer h-10 text-xs font-semibold"
+            >
+              + Tambah Pertanyaan Baru
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Detail Operasional & Kontak Tambahan */}
+        <Card className="border border-gray-100 shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-lg font-bold">Operasional, Lokasi & Sosial Media</CardTitle>
+            <CardDescription>
+              Informasi tambahan untuk pembeli di halaman tokomu (opsional).
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="operationalHours">Jam Operasional</Label>
+                <Input
+                  id="operationalHours"
+                  name="operationalHours"
+                  value={operationalHours}
+                  onChange={(e) => setOperationalHours(e.target.value)}
+                  placeholder="Senin - Sabtu, 10.00 - 21.00 WIB"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="address">Alamat Singkat</Label>
+                <Input
+                  id="address"
+                  name="address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="Banjarsari, Surakarta"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="googleMapsUrl">Tautan Google Maps</Label>
+              <Input
+                id="googleMapsUrl"
+                name="googleMapsUrl"
+                value={googleMapsUrl}
+                onChange={(e) => setGoogleMapsUrl(e.target.value)}
+                placeholder="https://maps.google.com/..."
+              />
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-3 pt-2">
+              <div className="space-y-2">
+                <Label htmlFor="instagramUrl">Instagram Username</Label>
+                <Input
+                  id="instagramUrl"
+                  name="instagramUrl"
+                  value={instagramUrl}
+                  onChange={(e) => setInstagramUrl(e.target.value)}
+                  placeholder="username_ig"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="facebookUrl">Facebook Username</Label>
+                <Input
+                  id="facebookUrl"
+                  name="facebookUrl"
+                  value={facebookUrl}
+                  onChange={(e) => setFacebookUrl(e.target.value)}
+                  placeholder="username_fb"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="tiktokUrl">TikTok Username</Label>
+                <Input
+                  id="tiktokUrl"
+                  name="tiktokUrl"
+                  value={tiktokUrl}
+                  onChange={(e) => setTiktokUrl(e.target.value)}
+                  placeholder="username_tiktok"
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Pilihan Desain */}
         <Card className="border border-gray-100 shadow-sm">
           <CardHeader>
@@ -364,7 +551,7 @@ export function ProfilForm({ shop }: { shop: Shop }) {
                   Warna dominan untuk tombol beli, teks link, dan aksen sorotan pada katalog.
                 </p>
               </div>
-              
+
               <div className="flex flex-wrap items-center gap-2.5">
                 {[
                   { value: "#059669", label: "Hijau" },
@@ -393,10 +580,11 @@ export function ProfilForm({ shop }: { shop: Shop }) {
                     )}
                   </button>
                 ))}
-                
+
+
                 {/* Custom Color Input */}
                 <div className="flex items-center gap-2 border-l border-gray-150 pl-3.5 ml-1">
-                  <div 
+                  <div
                     className="h-8 w-8 rounded-full border border-gray-200/80 shadow-xs relative overflow-hidden flex items-center justify-center cursor-pointer"
                     style={{ backgroundColor: primaryColor }}
                   >
@@ -442,7 +630,7 @@ export function ProfilForm({ shop }: { shop: Shop }) {
       </form>
 
       {/* Sidebar Panel: Live Preview & QR Code */}
-      <div className="lg:col-span-1 space-y-6">
+      <div className="lg:col-span-5 space-y-6">
         <Card className="border border-gray-100 shadow-sm overflow-hidden sticky top-6">
           <CardHeader className="pb-3 border-b border-gray-50 bg-gray-50/30">
             {/* Custom Premium Tabs Selector */}
@@ -452,8 +640,8 @@ export function ProfilForm({ shop }: { shop: Shop }) {
                 onClick={() => setActiveSidebarTab("preview")}
                 className={cn(
                   "flex-1 py-1.5 text-xs font-semibold rounded-md transition-all flex items-center justify-center gap-1.5 cursor-pointer",
-                  activeSidebarTab === "preview" 
-                    ? "bg-white text-gray-900 shadow-xs border border-gray-200/30 font-bold" 
+                  activeSidebarTab === "preview"
+                    ? "bg-white text-gray-900 shadow-xs border border-gray-200/30 font-bold"
                     : "text-gray-500 hover:text-gray-900"
                 )}
               >
@@ -465,8 +653,8 @@ export function ProfilForm({ shop }: { shop: Shop }) {
                 onClick={() => setActiveSidebarTab("qrcode")}
                 className={cn(
                   "flex-1 py-1.5 text-xs font-semibold rounded-md transition-all flex items-center justify-center gap-1.5 cursor-pointer",
-                  activeSidebarTab === "qrcode" 
-                    ? "bg-white text-gray-900 shadow-xs border border-gray-200/30 font-bold" 
+                  activeSidebarTab === "qrcode"
+                    ? "bg-white text-gray-900 shadow-xs border border-gray-200/30 font-bold"
                     : "text-gray-500 hover:text-gray-900"
                 )}
               >
@@ -486,6 +674,13 @@ export function ProfilForm({ shop }: { shop: Shop }) {
                 preset={selectedPreset}
                 primaryColor={primaryColor}
                 slug={shop.slug}
+                operationalHours={operationalHours}
+                address={address}
+                googleMapsUrl={googleMapsUrl}
+                instagramUrl={instagramUrl}
+                facebookUrl={facebookUrl}
+                tiktokUrl={tiktokUrl}
+                faq={faqList}
               />
             ) : (
               <QrCodeSection slug={shop.slug} isPublished={shop.isPublished} />

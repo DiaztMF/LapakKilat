@@ -95,12 +95,13 @@ export function CartDrawer({
       <div
         className={cn(
           "fixed inset-x-0 bottom-0 z-50 mx-auto max-w-md transform transition-transform duration-200 ease-out",
-          isOpen ? "translate-y-0" : "translate-y-full",
+          "max-h-[85vh] md:max-h-full",
+          "md:inset-y-0 md:right-0 md:left-auto md:max-w-none md:w-96 md:h-full md:border-l md:border-t-0 md:rounded-l-2xl md:rounded-t-none",
+          isOpen ? "translate-y-0 md:translate-x-0" : "translate-y-full md:translate-x-full",
           drawerBg,
           "rounded-t-2xl border-t",
           drawerBorder
         )}
-        style={{ maxHeight: "85vh" }}
       >
         {/* Header */}
         <div

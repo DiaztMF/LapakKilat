@@ -27,7 +27,7 @@ export function FloatingCart({ tokens, preset }: FloatingCartProps) {
       variant="ghost"
       onClick={handleClick}
       className={cn(
-        "fixed bottom-6 left-1/2 z-50 flex w-11/12 max-w-sm -translate-x-1/2 items-center justify-between px-5 py-6 text-sm font-semibold shadow-lg transition-all duration-150 ease-in-out active:scale-95",
+        "fixed bottom-6 left-1/2 -translate-x-1/2 md:left-auto md:right-8 md:translate-x-0 z-50 flex w-11/12 max-w-sm md:w-80 items-center justify-between px-5 py-6 text-sm font-semibold shadow-lg transition-all duration-150 ease-in-out active:scale-95",
         tokens.radius === "rounded-none" ? "rounded-none" : "rounded-2xl",
         tokens.accent,
         tokens.accentText,

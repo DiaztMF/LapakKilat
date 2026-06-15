@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, integer, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, integer, pgEnum, json } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 // ============================================================
@@ -81,6 +81,13 @@ export const shop = pgTable("shop", {
     .notNull()
     .default("fresh"),
   primaryColor: text("primary_color").notNull().default("#059669"),
+  operationalHours: text("operational_hours"),
+  address: text("address"),
+  googleMapsUrl: text("google_maps_url"),
+  instagramUrl: text("instagram_url"),
+  facebookUrl: text("facebook_url"),
+  tiktokUrl: text("tiktok_url"),
+  faq: json("faq").$type<{ question: string; answer: string }[]>().default([]),
   views: integer("views").notNull().default(0),
   whatsappClicks: integer("whatsapp_clicks").notNull().default(0),
   isPublished: boolean("is_published").notNull().default(false),
