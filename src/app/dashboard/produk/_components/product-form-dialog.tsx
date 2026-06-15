@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -46,28 +46,56 @@ export function ProductFormDialog({
 
   const isEditing = !!product;
 
-  // Reset state ketika dialog dibuka
-  const handleOpenChange = (newOpen: boolean) => {
-    if (newOpen && product) {
-      setImageUrl(product.image || "");
-      setIsAvailable(product.isAvailable);
-    } else if (newOpen && !product) {
-      setImageUrl("");
-      setIsAvailable(true);
+  // Sinkronisasi state ketika dialog dibuka atau produk yang dipilih berubah
+  useEffect(() => {
+    if (open) {
+      setImageUrl(product?.image || "");
+      setIsAvailable(product?.isAvailable ?? true);
+    } else {
+      // Optional: reset when closing
+      if (!product) {
+        setImageUrl("");
+        setIsAvailable(true);
+      }
     }
+  }, [open, product]);
+
+  const handleOpenChange = (newOpen: boolean) => {
     onOpenChange(newOpen);
   };
 
   const handleImageUpload = async (file: File) => {
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error("Ukuran file terlalu besar. Maksimal 2MB.");
-      return;
-    }
-
     setUploading(true);
     try {
+      let fileToUpload = file;
+      
+      if (file.size > 2 * 1024 * 1024) {
+        const { default: imageCompression } = await import('browser-image-compression');
+        toast.info("Mengkompresi gambar...", { id: "compress-toast" });
+        
+        try {
+          fileToUpload = await imageCompression(file, {
+            maxSizeMB: 2,
+            maxWidthOrHeight: 1920,
+            useWebWorker: true,
+          });
+          toast.dismiss("compress-toast");
+        } catch (error) {
+          toast.dismiss("compress-toast");
+          toast.error("Gagal mengkompresi gambar.");
+          setUploading(false);
+          return;
+        }
+      }
+
+      if (fileToUpload.size > 2.5 * 1024 * 1024) {
+        toast.error("Ukuran file masih terlalu besar. Maksimal 2MB.");
+        setUploading(false);
+        return;
+      }
+
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("file", fileToUpload);
 
       const res = await fetch("/api/upload", {
         method: "POST",

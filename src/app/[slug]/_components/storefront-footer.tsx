@@ -310,7 +310,7 @@ export function StorefrontFooter({ shop, tokens }: StorefrontFooterProps) {
           tokens.canvas === "bg-zinc-950" ? "border-zinc-900" : "border-gray-150/60"
         )}>
           <p className={tokens.muted}>
-            &copy; {new Date().getFullYear()} {shop.name}. All rights reserved.
+            &copy; {new Date().getFullYear()} {shop.name}. Hak Cipta Dilindungi.
           </p>
           
           <p className={cn("flex flex-wrap items-center justify-center gap-1 md:gap-1.5", tokens.muted)}>

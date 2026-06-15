@@ -52,7 +52,7 @@ export default function Pricing({ onGetStarted }: PricingProps) {
                     </Card>
  
                     {/* Pro Plan */}
-                    <Card className="relative flex flex-col justify-between border border-emerald-500 shadow-md rounded-2xl p-6 bg-white ring-1 ring-emerald-500">
+                    <Card className="relative flex flex-col justify-between border border-emerald-500 shadow-md rounded-2xl p-6 bg-white ring-1 ring-emerald-500 overflow-visible">
                         <span className="absolute inset-x-0 -top-3.5 mx-auto flex h-7 w-fit items-center rounded-full bg-emerald-600 px-4 py-1 text-xs font-semibold text-white uppercase tracking-wider">
                             Paling Populer
                         </span>

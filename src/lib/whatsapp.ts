@@ -39,7 +39,7 @@ ${itemLines}
 
 *Total: ${formatRupiah(total)}*
 
-Terima kasih! 🙏`;
+Terima kasih!`;
 
   // Normalize nomor WhatsApp: hapus leading 0, tambahkan 62
   const cleanNumber = shopWhatsapp

@@ -73,19 +73,41 @@ export function ProfilForm({ shop }: { shop: Shop }) {
     file: File,
     type: "profile" | "banner"
   ) => {
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error("Ukuran file terlalu besar. Maksimal 2MB.");
-      return;
-    }
-
     const setUploading =
       type === "profile" ? setUploadingProfile : setUploadingBanner;
     const setImage = type === "profile" ? setProfileImage : setBannerImage;
 
     setUploading(true);
     try {
+      let fileToUpload = file;
+      
+      if (file.size > 2 * 1024 * 1024) {
+        const { default: imageCompression } = await import('browser-image-compression');
+        toast.info("Mengkompresi gambar...", { id: "compress-toast" });
+        
+        try {
+          fileToUpload = await imageCompression(file, {
+            maxSizeMB: 2,
+            maxWidthOrHeight: 1920,
+            useWebWorker: true,
+          });
+          toast.dismiss("compress-toast");
+        } catch (error) {
+          toast.dismiss("compress-toast");
+          toast.error("Gagal mengkompresi gambar.");
+          setUploading(false);
+          return;
+        }
+      }
+
+      if (fileToUpload.size > 2.5 * 1024 * 1024) {
+        toast.error("Ukuran file masih terlalu besar. Maksimal 2MB.");
+        setUploading(false);
+        return;
+      }
+
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("file", fileToUpload);
 
       const res = await fetch("/api/upload", {
         method: "POST",

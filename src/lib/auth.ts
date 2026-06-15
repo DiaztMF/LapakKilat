@@ -39,6 +39,7 @@ export const auth = betterAuth({
     "http://localhost:3000",
     "https://*.ngrok-free.app",
     "https://*.ngrok.io",
+    "https://lapak-kilat.vercel.app",
   ],
   databaseHooks: {
     user: {

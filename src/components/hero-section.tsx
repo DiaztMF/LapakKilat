@@ -61,13 +61,10 @@ export default function HeroSection({ onGetStarted }: HeroSectionProps) {
                 <div className="relative mx-auto max-w-4xl mt-16 sm:mt-20">
                     <div className="relative rounded-2xl border border-gray-100 bg-white p-3 shadow-2xl shadow-gray-200/60 ring-1 ring-gray-100">
                         <div className="overflow-hidden rounded-xl bg-gray-50 border border-gray-100">
-                            <Image
-                                className="w-full h-auto max-h-[500px] object-cover object-top hover:scale-[1.01] transition-transform duration-300"
-                                src="/lapakkilat_mobile_mockup.png"
+                            <img
+                                className="w-full h-auto object-cover object-top hover:scale-[1.02] transition-transform duration-300"
+                                src="/desktopmockup.png"
                                 alt="LapakKilat Storefront Mockup"
-                                width={1600}
-                                height={1000}
-                                priority
                             />
                         </div>
                     </div>

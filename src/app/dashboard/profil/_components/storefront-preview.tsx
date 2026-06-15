@@ -113,7 +113,7 @@ export function StorefrontPreview({
             {/* Browser Mock Bar */}
             <div className="h-10 bg-gray-100 border-b border-gray-200 px-3.5 flex items-center shrink-0 z-20">
               <div className="flex-1 bg-white rounded-md border border-gray-200/80 h-6 px-2 flex items-center justify-between text-[10px] text-gray-500 font-mono">
-                <span className="truncate">lapakkilat.com/{displaySlug}</span>
+                <span className="truncate">lapak-kilat.vercel.app/{displaySlug}</span>
                 <ExternalLink className="h-2.5 w-2.5 text-gray-400 shrink-0" />
               </div>
             </div>
@@ -329,7 +329,7 @@ export function StorefrontPreview({
             >
               <span className="flex items-center gap-2">
                 <ShoppingCart className="h-4 w-4" />
-                <span>1 Item</span>
+                <span>1 Produk</span>
               </span>
               <span>Rp25.000</span>
             </div>

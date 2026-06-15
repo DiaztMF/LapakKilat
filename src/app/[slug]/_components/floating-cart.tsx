@@ -36,7 +36,7 @@ export function FloatingCart({ tokens, preset }: FloatingCartProps) {
     >
       <span className="flex items-center gap-2">
         <ShoppingCart className="h-5 w-5" />
-        <span>{getTotalItems()} Item</span>
+        <span>{getTotalItems()} Produk</span>
       </span>
       <span className="font-bold">{formatRupiah(getTotalPrice())}</span>
     </Button>
