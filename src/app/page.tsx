@@ -1,12 +1,9 @@
 "use client";
 
-import { signIn, useSession } from "@/lib/auth-client";
+import { useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 
 // Import new Tailark components
-import LogoCloud from "@/components/logo-cloud";
 import StatsSection from "@/components/stats-2";
 import Testimonials from "@/components/testimonials";
 import Pricing from "@/components/pricing";

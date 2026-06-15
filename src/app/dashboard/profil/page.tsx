@@ -1,6 +1,5 @@
 import { getShopByUser } from "@/app/actions/shop";
 import { ProfilForm } from "./_components/profil-form";
-import { QrCodeSection } from "./_components/qr-code-section";
 
 export default async function ProfilPage() {
   const shop = await getShopByUser();
@@ -22,14 +21,7 @@ export default async function ProfilPage() {
         </p>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <ProfilForm shop={shop} />
-        </div>
-        <div>
-          <QrCodeSection slug={shop.slug} isPublished={shop.isPublished} />
-        </div>
-      </div>
+      <ProfilForm shop={shop} />
     </div>
   );
 }
