@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { Share2, Check, Copy, Download, Printer } from "lucide-react";
 import { toast } from "sonner";
 import QRCode from "qrcode";

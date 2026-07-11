@@ -1,9 +1,7 @@
-import { getShopByUser, toggleShopPublishStatus, getShopDailyAnalytics } from "@/app/actions/shop";
+import { getShopByUser, getShopDailyAnalytics } from "@/app/actions/shop";
 import { getProducts } from "@/app/actions/product";
 import { redirect } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { 
   Eye, 
   MousePointerClick, 
@@ -12,7 +10,6 @@ import {
   ExternalLink, 
   Store, 
   ArrowRight, 
-  Share2,
   CheckCircle2,
   Sparkles
 } from "lucide-react";
@@ -232,7 +229,7 @@ export default async function DashboardPage() {
               </div>
             </CardHeader>
             <CardContent className="space-y-6 pt-4">
-              {steps.map((step, index) => (
+              {steps.map((step) => (
                 <div 
                   key={step.id} 
                   className={cn(

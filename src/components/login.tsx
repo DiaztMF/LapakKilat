@@ -25,10 +25,10 @@ export default function LoginPage() {
             email,
             password,
             rememberMe,
-            callbackURL: "/",
+            callbackURL: "/dashboard",
             fetchOptions: {
                 onSuccess: () => {
-                    router.push('/')
+                    router.push('/dashboard')
                 },
                 onError: (ctx) => {
                     let errMsg = 'Gagal masuk. Periksa kembali email dan kata sandi Anda.';
@@ -50,7 +50,7 @@ export default function LoginPage() {
     const handleGoogleLogin = async () => {
         await signIn.social({
             provider: 'google',
-            callbackURL: "/"
+            callbackURL: "/dashboard"
         })
     }
 

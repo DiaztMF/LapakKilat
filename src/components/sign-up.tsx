@@ -21,15 +21,15 @@ export default function SignUpPage() {
         e.preventDefault()
         setIsLoading(true)
         setError('')
-        
+
         await signUp.email({
             email,
             password,
             name: `${firstName} ${lastName}`.trim(),
-            callbackURL: "/",
+            callbackURL: "/dashboard",
             fetchOptions: {
                 onSuccess: () => {
-                    router.push('/')
+                    router.push('/dashboard')
                 },
                 onError: (ctx) => {
                     let errMsg = 'Gagal mendaftar. Silakan coba lagi.';
@@ -53,7 +53,7 @@ export default function SignUpPage() {
     const handleGoogleLogin = async () => {
         await signIn.social({
             provider: 'google',
-            callbackURL: "/"
+            callbackURL: "/dashboard"
         })
     }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -46,19 +46,23 @@ export function ProductFormDialog({
 
   const isEditing = !!product;
 
-  // Sinkronisasi state ketika dialog dibuka atau produk yang dipilih berubah
-  useEffect(() => {
+  // Sinkronisasi state langsung saat rendering tanpa useEffect untuk mencegah cascading renders
+  const [prevProduct, setPrevProduct] = useState<Product | null>(product);
+  const [prevOpen, setPrevOpen] = useState(open);
+
+  if (product !== prevProduct || open !== prevOpen) {
+    setPrevProduct(product);
+    setPrevOpen(open);
     if (open) {
       setImageUrl(product?.image || "");
       setIsAvailable(product?.isAvailable ?? true);
     } else {
-      // Optional: reset when closing
       if (!product) {
         setImageUrl("");
         setIsAvailable(true);
       }
     }
-  }, [open, product]);
+  }
 
   const handleOpenChange = (newOpen: boolean) => {
     onOpenChange(newOpen);
@@ -80,7 +84,7 @@ export function ProductFormDialog({
             useWebWorker: true,
           });
           toast.dismiss("compress-toast");
-        } catch (error) {
+        } catch {
           toast.dismiss("compress-toast");
           toast.error("Gagal mengkompresi gambar.");
           setUploading(false);

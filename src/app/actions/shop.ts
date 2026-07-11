@@ -26,80 +26,86 @@ export async function getShopByUser() {
 }
 
 export async function updateShopProfile(formData: FormData) {
-  const user = await getAuthenticatedUser();
-
-  const name = formData.get("name") as string;
-  const slogan = formData.get("slogan") as string;
-  const whatsapp = formData.get("whatsapp") as string;
-  const profileImage = formData.get("profileImage") as string;
-  const bannerImage = formData.get("bannerImage") as string;
-  const templatePreset = formData.get("templatePreset") as
-    | "fresh"
-    | "playful"
-    | "minimalist";
-  const primaryColor = formData.get("primaryColor") as string;
-  const operationalHours = formData.get("operationalHours") as string;
-  const address = formData.get("address") as string;
-  const googleMapsUrl = formData.get("googleMapsUrl") as string;
-  const instagramUrl = formData.get("instagramUrl") as string;
-  const facebookUrl = formData.get("facebookUrl") as string;
-  const tiktokUrl = formData.get("tiktokUrl") as string;
-  const faqString = formData.get("faq") as string;
-  let faqList = [];
   try {
-    faqList = faqString ? JSON.parse(faqString) : [];
-  } catch (e) {
-    console.error("Gagal mem-parse faq:", e);
+    const user = await getAuthenticatedUser();
+
+    const name = formData.get("name") as string;
+    const slogan = formData.get("slogan") as string;
+    const whatsapp = formData.get("whatsapp") as string;
+    const profileImage = formData.get("profileImage") as string;
+    const bannerImage = formData.get("bannerImage") as string;
+    const templatePreset = formData.get("templatePreset") as
+      | "fresh"
+      | "playful"
+      | "minimalist";
+    const primaryColor = formData.get("primaryColor") as string;
+    const operationalHours = formData.get("operationalHours") as string;
+    const address = formData.get("address") as string;
+    const googleMapsUrl = formData.get("googleMapsUrl") as string;
+    const instagramUrl = formData.get("instagramUrl") as string;
+    const facebookUrl = formData.get("facebookUrl") as string;
+    const tiktokUrl = formData.get("tiktokUrl") as string;
+    const faqString = formData.get("faq") as string;
+    let faqList = [];
+    try {
+      faqList = faqString ? JSON.parse(faqString) : [];
+    } catch (e) {
+      console.error("Gagal mem-parse faq:", e);
+    }
+
+    if (!name || name.trim().length === 0) {
+      return { error: "Nama toko wajib diisi." };
+    }
+
+    // Generate slug dari nama toko
+    const baseSlug = slugify(name);
+    const existingShop = await db.query.shop.findFirst({
+      where: eq(shop.userId, user.id),
+    });
+
+    if (!existingShop) {
+      return { error: "Toko tidak ditemukan." };
+    }
+
+    // Cek apakah slug berubah
+    let newSlug = existingShop.slug;
+    const currentBaseName = existingShop.slug.replace(/-[a-zA-Z0-9_-]{6}$/, "");
+    if (currentBaseName !== baseSlug) {
+      newSlug = `${baseSlug}-${nanoid(6)}`;
+    }
+
+    await db
+      .update(shop)
+      .set({
+        name: name.trim(),
+        slug: newSlug,
+        slogan: slogan?.trim() || null,
+        whatsapp: whatsapp?.trim() || null,
+        profileImage: profileImage || null,
+        bannerImage: bannerImage || null,
+        templatePreset: templatePreset || "fresh",
+        primaryColor: primaryColor || "#059669",
+        operationalHours: operationalHours?.trim() || null,
+        address: address?.trim() || null,
+        googleMapsUrl: googleMapsUrl?.trim() || null,
+        instagramUrl: instagramUrl?.trim() || null,
+        facebookUrl: facebookUrl?.trim() || null,
+        tiktokUrl: tiktokUrl?.trim() || null,
+        faq: faqList,
+        updatedAt: new Date(),
+      })
+      .where(eq(shop.userId, user.id));
+
+    revalidatePath("/dashboard/profil");
+    revalidatePath("/dashboard");
+    revalidatePath(`/${newSlug}`);
+
+    return { success: true, slug: newSlug };
+  } catch (error) {
+    console.error("Gagal memperbarui profil toko:", error);
+    const message = error instanceof Error ? error.message : "Gagal memperbarui profil toko.";
+    return { error: message };
   }
-
-  if (!name || name.trim().length === 0) {
-    return { error: "Nama toko wajib diisi." };
-  }
-
-  // Generate slug dari nama toko
-  const baseSlug = slugify(name);
-  const existingShop = await db.query.shop.findFirst({
-    where: eq(shop.userId, user.id),
-  });
-
-  if (!existingShop) {
-    return { error: "Toko tidak ditemukan." };
-  }
-
-  // Cek apakah slug berubah
-  let newSlug = existingShop.slug;
-  const currentBaseName = existingShop.slug.replace(/-[a-zA-Z0-9_-]{6}$/, "");
-  if (currentBaseName !== baseSlug) {
-    newSlug = `${baseSlug}-${nanoid(6)}`;
-  }
-
-  await db
-    .update(shop)
-    .set({
-      name: name.trim(),
-      slug: newSlug,
-      slogan: slogan?.trim() || null,
-      whatsapp: whatsapp?.trim() || null,
-      profileImage: profileImage || null,
-      bannerImage: bannerImage || null,
-      templatePreset: templatePreset || "fresh",
-      primaryColor: primaryColor || "#059669",
-      operationalHours: operationalHours?.trim() || null,
-      address: address?.trim() || null,
-      googleMapsUrl: googleMapsUrl?.trim() || null,
-      instagramUrl: instagramUrl?.trim() || null,
-      facebookUrl: facebookUrl?.trim() || null,
-      tiktokUrl: tiktokUrl?.trim() || null,
-      faq: faqList,
-      updatedAt: new Date(),
-    })
-    .where(eq(shop.userId, user.id));
-
-  revalidatePath("/dashboard/profil");
-  revalidatePath("/dashboard");
-  revalidatePath(`/${newSlug}`);
-
-  return { success: true, slug: newSlug };
 }
 
 export async function incrementShopViews(shopId: string) {

@@ -1,5 +1,4 @@
 import React from 'react'
-import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'

@@ -11,7 +11,7 @@ interface FloatingCartProps {
   preset: TemplatePreset;
 }
 
-export function FloatingCart({ tokens, preset }: FloatingCartProps) {
+export function FloatingCart({ tokens }: FloatingCartProps) {
   const items = useCartStore((state) => state.items);
   const getTotalItems = useCartStore((state) => state.getTotalItems);
   const getTotalPrice = useCartStore((state) => state.getTotalPrice);

@@ -7,6 +7,7 @@ import { useCartStore } from "@/stores/cart-store";
 import type { TemplateTokens, TemplatePreset } from "@/lib/template-presets";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface Product {
   id: string;
@@ -21,13 +22,86 @@ interface ProductGridProps {
   products: Product[];
   tokens: TemplateTokens;
   preset: TemplatePreset;
+  shopSlug: string;
 }
 
-export function ProductGrid({ products, tokens, preset }: ProductGridProps) {
+export function ProductGrid({ products, tokens, preset, shopSlug }: ProductGridProps) {
   const [activeCategory, setActiveCategory] = useState("Semua");
+  const [localProducts, setLocalProducts] = useState<Product[]>(products);
   const addItem = useCartStore((state) => state.addItem);
+  const items = useCartStore((state) => state.items);
+  const removeItem = useCartStore((state) => state.removeItem);
 
-  // Listen for category changes from CategoryTabs
+  // Sinkronisasi state lokal jika props produk berubah (load server awal) tanpa useEffect
+  const [prevProducts, setPrevProducts] = useState<Product[]>(products);
+  if (products !== prevProducts) {
+    setPrevProducts(products);
+    setLocalProducts(products);
+  }
+
+  // Polling data produk berkala & Revalidasi saat tab difokuskan
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch(`/api/shop/${shopSlug}/products?t=${Date.now()}`, {
+          cache: "no-store",
+        });
+        if (res.status === 403 || res.status === 404) {
+          // Toko dinonaktifkan atau tidak ditemukan, picu reload halaman
+          window.location.reload();
+          return;
+        }
+        if (res.ok) {
+          const data = await res.json();
+          setLocalProducts(data);
+        }
+      } catch (error) {
+        console.error("Gagal memperbarui produk secara real-time:", error);
+      }
+    };
+
+    // Polling setiap 10 detik
+    const intervalId = setInterval(fetchProducts, 10000);
+
+    // Ambil data instan jika user kembali memfokuskan tab peramban
+    const handleFocus = () => {
+      fetchProducts();
+    };
+    window.addEventListener("focus", handleFocus);
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        fetchProducts();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [shopSlug]);
+
+  // Pembersihan keranjang otomatis jika produk dinonaktifkan oleh pemilik
+  useEffect(() => {
+    if (localProducts.length === 0) return;
+
+    const unavailableItems = items.filter(
+      (item) => !localProducts.some((p) => p.id === item.productId)
+    );
+
+    if (unavailableItems.length > 0) {
+      unavailableItems.forEach((item) => {
+        removeItem(item.productId);
+      });
+      toast.info("Beberapa produk di keranjang Anda sudah tidak tersedia dan telah dihapus.", {
+        id: "cart-cleanup-toast",
+      });
+    }
+  }, [localProducts, items, removeItem]);
+
+  // Mendengarkan perubahan kategori dari CategoryTabs
   useEffect(() => {
     const handleCategoryChange = (e: Event) => {
       const customEvent = e as CustomEvent<string>;
@@ -41,8 +115,8 @@ export function ProductGrid({ products, tokens, preset }: ProductGridProps) {
 
   const filteredProducts =
     activeCategory === "Semua"
-      ? products
-      : products.filter((p) => p.category === activeCategory);
+      ? localProducts
+      : localProducts.filter((p) => p.category === activeCategory);
 
   const handleAddToCart = (product: Product) => {
     addItem({

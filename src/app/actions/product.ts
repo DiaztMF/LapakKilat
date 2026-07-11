@@ -34,147 +34,178 @@ export async function getProducts() {
 }
 
 export async function createProduct(formData: FormData) {
-  const userShop = await getAuthenticatedShop();
+  try {
+    const userShop = await getAuthenticatedShop();
 
-  // Cek limit produk
-  const [productCount] = await db
-    .select({ value: count() })
-    .from(product)
-    .where(eq(product.shopId, userShop.id));
+    // Cek limit produk
+    const [productCount] = await db
+      .select({ value: count() })
+      .from(product)
+      .where(eq(product.shopId, userShop.id));
 
-  if (productCount.value >= MAX_PRODUCTS) {
-    return { error: `Maksimal ${MAX_PRODUCTS} produk per toko.` };
-  }
+    if (productCount.value >= MAX_PRODUCTS) {
+      return { error: `Maksimal ${MAX_PRODUCTS} produk per toko.` };
+    }
 
-  const name = formData.get("name") as string;
-  const description = formData.get("description") as string;
-  const price = parseInt(formData.get("price") as string, 10);
-  const category = formData.get("category") as string;
-  const image = formData.get("imageUrl") as string;
+    const name = formData.get("name") as string;
+    const description = formData.get("description") as string;
+    const price = parseInt(formData.get("price") as string, 10);
+    const category = formData.get("category") as string;
+    const image = formData.get("imageUrl") as string;
 
-  if (!name || name.trim().length === 0) {
-    return { error: "Nama produk wajib diisi." };
-  }
+    if (!name || name.trim().length === 0) {
+      return { error: "Nama produk wajib diisi." };
+    }
 
-  if (isNaN(price) || price < 0) {
-    return { error: "Harga tidak valid." };
-  }
+    if (isNaN(price) || price < 0) {
+      return { error: "Harga tidak valid." };
+    }
 
-  await db.insert(product).values({
-    id: nanoid(),
-    shopId: userShop.id,
-    name: name.trim(),
-    description: description?.trim() || null,
-    price,
-    category: category?.trim() || null,
-    image: image || null,
-    sortOrder: productCount.value,
-    isAvailable: true,
-  });
-
-  revalidatePath("/dashboard/produk");
-  revalidatePath(`/${userShop.slug}`);
-
-  return { success: true };
-}
-
-export async function updateProduct(formData: FormData) {
-  const userShop = await getAuthenticatedShop();
-  const productId = formData.get("productId") as string;
-
-  if (!productId) {
-    return { error: "ID produk tidak ditemukan." };
-  }
-
-  const name = formData.get("name") as string;
-  const description = formData.get("description") as string;
-  const price = parseInt(formData.get("price") as string, 10);
-  const category = formData.get("category") as string;
-  const image = formData.get("imageUrl") as string;
-  const isAvailable = formData.get("isAvailable") === "true";
-
-  if (!name || name.trim().length === 0) {
-    return { error: "Nama produk wajib diisi." };
-  }
-
-  if (isNaN(price) || price < 0) {
-    return { error: "Harga tidak valid." };
-  }
-
-  await db
-    .update(product)
-    .set({
+    await db.insert(product).values({
+      id: nanoid(),
+      shopId: userShop.id,
       name: name.trim(),
       description: description?.trim() || null,
       price,
       category: category?.trim() || null,
       image: image || null,
-      isAvailable,
-      updatedAt: new Date(),
-    })
-    .where(
-      and(eq(product.id, productId), eq(product.shopId, userShop.id))
-    );
+      sortOrder: productCount.value,
+      isAvailable: true,
+    });
 
-  revalidatePath("/dashboard/produk");
-  revalidatePath(`/${userShop.slug}`);
+    revalidatePath("/dashboard/produk");
+    revalidatePath(`/${userShop.slug}`);
 
-  return { success: true };
+    return { success: true };
+  } catch (error) {
+    console.error("Gagal menambahkan produk:", error);
+    const message = error instanceof Error ? error.message : "Gagal menambahkan produk.";
+    return { error: message };
+  }
+}
+
+export async function updateProduct(formData: FormData) {
+  try {
+    const userShop = await getAuthenticatedShop();
+    const productId = formData.get("productId") as string;
+
+    if (!productId) {
+      return { error: "ID produk tidak ditemukan." };
+    }
+
+    const name = formData.get("name") as string;
+    const description = formData.get("description") as string;
+    const price = parseInt(formData.get("price") as string, 10);
+    const category = formData.get("category") as string;
+    const image = formData.get("imageUrl") as string;
+    const isAvailable = formData.get("isAvailable") === "true";
+
+    if (!name || name.trim().length === 0) {
+      return { error: "Nama produk wajib diisi." };
+    }
+
+    if (isNaN(price) || price < 0) {
+      return { error: "Harga tidak valid." };
+    }
+
+    await db
+      .update(product)
+      .set({
+        name: name.trim(),
+        description: description?.trim() || null,
+        price,
+        category: category?.trim() || null,
+        image: image || null,
+        isAvailable,
+        updatedAt: new Date(),
+      })
+      .where(
+        and(eq(product.id, productId), eq(product.shopId, userShop.id))
+      );
+
+    revalidatePath("/dashboard/produk");
+    revalidatePath(`/${userShop.slug}`);
+
+    return { success: true };
+  } catch (error) {
+    console.error("Gagal memperbarui produk:", error);
+    const message = error instanceof Error ? error.message : "Gagal memperbarui produk.";
+    return { error: message };
+  }
 }
 
 export async function deleteProduct(productId: string) {
-  const userShop = await getAuthenticatedShop();
+  try {
+    const userShop = await getAuthenticatedShop();
 
-  await db
-    .delete(product)
-    .where(
-      and(eq(product.id, productId), eq(product.shopId, userShop.id))
-    );
+    await db
+      .delete(product)
+      .where(
+        and(eq(product.id, productId), eq(product.shopId, userShop.id))
+      );
 
-  revalidatePath("/dashboard/produk");
-  revalidatePath(`/${userShop.slug}`);
+    revalidatePath("/dashboard/produk");
+    revalidatePath(`/${userShop.slug}`);
 
-  return { success: true };
+    return { success: true };
+  } catch (error) {
+    console.error("Gagal menghapus produk:", error);
+    const message = error instanceof Error ? error.message : "Gagal menghapus produk.";
+    return { error: message };
+  }
 }
 
 export async function toggleProductAvailability(productId: string, isAvailable: boolean) {
-  const userShop = await getAuthenticatedShop();
+  try {
+    const userShop = await getAuthenticatedShop();
 
-  await db
-    .update(product)
-    .set({
-      isAvailable,
-      updatedAt: new Date(),
-    })
-    .where(
-      and(eq(product.id, productId), eq(product.shopId, userShop.id))
-    );
+    await db
+      .update(product)
+      .set({
+        isAvailable,
+        updatedAt: new Date(),
+      })
+      .where(
+        and(eq(product.id, productId), eq(product.shopId, userShop.id))
+      );
 
-  revalidatePath("/dashboard/produk");
-  revalidatePath(`/${userShop.slug}`);
+    revalidatePath("/dashboard/produk");
+    revalidatePath(`/${userShop.slug}`);
 
-  return { success: true };
+    return { success: true };
+  } catch (error) {
+    console.error("Gagal mengubah ketersediaan produk:", error);
+    const message = error instanceof Error ? error.message : "Gagal mengubah ketersediaan produk.";
+    return { error: message };
+  }
 }
 
 export async function reorderProducts(productIds: string[]) {
-  const userShop = await getAuthenticatedShop();
+  try {
+    const userShop = await getAuthenticatedShop();
 
-  // Update order in batch
-  const promises = productIds.map((id, index) =>
-    db
-      .update(product)
-      .set({
-        sortOrder: index,
-        updatedAt: new Date(),
-      })
-      .where(and(eq(product.id, id), eq(product.shopId, userShop.id)))
-  );
+    // Jalankan kueri pembaruan dalam satu transaksi database tunggal agar atomik dan cepat
+    await db.transaction(async (tx) => {
+      for (let index = 0; index < productIds.length; index++) {
+        const id = productIds[index];
+        await tx
+          .update(product)
+          .set({
+            sortOrder: index,
+            updatedAt: new Date(),
+          })
+          .where(and(eq(product.id, id), eq(product.shopId, userShop.id)));
+      }
+    });
 
-  await Promise.all(promises);
+    revalidatePath("/dashboard/produk");
+    revalidatePath(`/${userShop.slug}`);
 
-  revalidatePath("/dashboard/produk");
-  revalidatePath(`/${userShop.slug}`);
-
-  return { success: true };
+    return { success: true };
+  } catch (error) {
+    console.error("Gagal mengurutkan produk:", error);
+    const message = error instanceof Error ? error.message : "Gagal mengurutkan produk.";
+    return { error: message };
+  }
 }
 
