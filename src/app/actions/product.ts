@@ -184,19 +184,20 @@ export async function reorderProducts(productIds: string[]) {
   try {
     const userShop = await getAuthenticatedShop();
 
-    // Jalankan kueri pembaruan dalam satu transaksi database tunggal agar atomik dan cepat
-    await db.transaction(async (tx) => {
-      for (let index = 0; index < productIds.length; index++) {
-        const id = productIds[index];
-        await tx
+    // Gunakan db.batch untuk mengeksekusi semua pembaruan urutan produk dalam satu HTTP roundtrip
+    if (productIds.length > 0) {
+      const batchQueries = productIds.map((id, index) =>
+        db
           .update(product)
           .set({
             sortOrder: index,
             updatedAt: new Date(),
           })
-          .where(and(eq(product.id, id), eq(product.shopId, userShop.id)));
-      }
-    });
+          .where(and(eq(product.id, id), eq(product.shopId, userShop.id)))
+      );
+
+      await db.batch(batchQueries as [typeof batchQueries[number], ...typeof batchQueries[number][]]);
+    }
 
     revalidatePath("/dashboard/produk");
     revalidatePath(`/${userShop.slug}`);
